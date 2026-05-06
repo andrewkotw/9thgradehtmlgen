@@ -1,0 +1,963 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>國中生網站內容填寫器</title>
+    <style>
+      :root {
+        --bg: #f8fafc;
+        --panel: #ffffff;
+        --border: #e2e8f0;
+        --text: #1e293b;
+        --muted: #64748b;
+        --accent: #ef4444;
+        --accent-soft: #fee2e2;
+        --card: #fff8fb;
+        --shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+      }
+
+      .page {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .hero {
+        margin-bottom: 20px;
+      }
+
+      .hero h1 {
+        margin: 0 0 8px;
+        font-size: 2rem;
+      }
+
+      .hero p {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 20px;
+      }
+
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .panel-header {
+        padding: 20px 20px 0;
+      }
+
+      .panel-header h2 {
+        margin: 0 0 8px;
+        font-size: 1.4rem;
+      }
+
+      .panel-header p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .panel-body {
+        padding: 20px;
+      }
+
+      .section-title {
+        margin: 28px 0 12px;
+        font-size: 1.05rem;
+        color: #991b1b;
+      }
+
+      .grid-2 {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .field {
+        margin-bottom: 14px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 700;
+        font-size: 0.95rem;
+      }
+
+      input,
+      textarea,
+      select {
+        width: 100%;
+        border: 1px solid #cbd5e1;
+        border-radius: 14px;
+        padding: 12px 14px;
+        font: inherit;
+        color: var(--text);
+        background: #fff;
+      }
+
+      textarea {
+        min-height: 110px;
+        resize: vertical;
+      }
+
+      .small {
+        min-height: 84px;
+      }
+
+      .code-box {
+        width: 100%;
+        min-height: 520px;
+        border: 1px solid #cbd5e1;
+        border-radius: 16px;
+        padding: 14px;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 12px;
+        line-height: 1.5;
+        background: #0f172a;
+        color: #e2e8f0;
+        resize: vertical;
+      }
+
+      .button-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 18px;
+      }
+
+      button {
+        border: none;
+        border-radius: 999px;
+        padding: 12px 18px;
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .primary {
+        background: var(--accent);
+        color: white;
+      }
+
+      .secondary {
+        background: #e2e8f0;
+        color: #0f172a;
+      }
+
+      .ghost {
+        background: white;
+        color: #334155;
+        border: 1px solid #cbd5e1;
+      }
+
+      .hint {
+        color: var(--muted);
+        font-size: 0.9rem;
+        margin-top: 8px;
+      }
+
+      .block {
+        border: 1px solid var(--border);
+        background: #fff;
+        border-radius: 18px;
+        padding: 14px;
+        margin-bottom: 12px;
+      }
+
+      .preview-frame {
+        width: 100%;
+        height: 420px;
+        border: 1px solid #cbd5e1;
+        border-radius: 16px;
+        background: white;
+      }
+
+      .status {
+        margin-left: 6px;
+        color: #16a34a;
+        font-weight: 700;
+      }
+
+      @media (max-width: 1000px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 700px) {
+        .grid-2 {
+          grid-template-columns: 1fr;
+        }
+        .page {
+          padding: 14px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="hero">
+        <h1>國中生網站內容填寫器</h1>
+        <p>
+          把內容貼進欄位裡，系統會自動生出完整 HTML。最後可以複製或下載成
+          <code>example.html</code>。
+        </p>
+      </div>
+
+      <div class="layout">
+        <section class="panel">
+          <div class="panel-header">
+            <h2>左邊填內容</h2>
+            <p>學生只要輸入文字與圖片檔名，不需要碰 React 或 npm。</p>
+          </div>
+          <div class="panel-body">
+            <div class="grid-2">
+              <div class="field">
+                <label for="pageTitle">網站標題</label>
+                <input id="pageTitle" />
+              </div>
+              <div class="field">
+                <label for="mainTitle">首頁大標題</label>
+                <input id="mainTitle" />
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="subtitle">一句簡介</label>
+              <input id="subtitle" />
+            </div>
+
+            <div class="field">
+              <label for="theme">選擇主題顏色</label>
+              <select id="theme">
+                <option value="red">紅色主題</option>
+                <option value="blue">藍色主題</option>
+                <option value="green">綠色主題</option>
+                <option value="purple">紫色主題</option>
+                <option value="orange">橘色主題</option>
+              </select>
+            </div>
+
+            <div class="grid-2">
+              <div class="field">
+                <label for="profileImage">個人圖片 URL</label>
+                <input
+                  id="profileImage"
+                  placeholder="https://example.com/photo.jpg"
+                />
+              </div>
+              <div class="field">
+                <label for="workImage">作品圖片 URL</label>
+                <input
+                  id="workImage"
+                  placeholder="https://example.com/work.jpg"
+                />
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="intro">我是誰</label>
+              <textarea id="intro"></textarea>
+            </div>
+
+            <div class="field">
+              <label for="tagsText">個人標籤（用逗號分隔）</label>
+              <input id="tagsText" />
+            </div>
+
+            <h3 class="section-title">數位技能卡片</h3>
+            <div id="skillsWrap"></div>
+
+            <div class="field">
+              <label for="favoriteWork">我最喜歡的一次作品</label>
+              <textarea id="favoriteWork"></textarea>
+            </div>
+
+            <h3 class="section-title">我的成長與目標</h3>
+            <div id="growthWrap"></div>
+
+            <div class="field">
+              <label for="futureMessage">我想對未來的自己說</label>
+              <textarea id="futureMessage"></textarea>
+            </div>
+
+            <div class="field">
+              <label for="footer">頁尾文字</label>
+              <input id="footer" />
+            </div>
+
+            <div class="button-row">
+              <button class="primary" id="copyBtn">複製 HTML</button>
+              <button class="secondary" id="downloadBtn">
+                下載 example.html
+              </button>
+              <button class="ghost" id="resetBtn">重設範例</button>
+              <span class="status" id="status"></span>
+            </div>
+            <div class="hint">
+              📸 使用外部圖片 URL：Imgur、Pinterest、Google Photos
+              等任何可公開訪問的圖片連接。複製圖片連結貼入即可。
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <h2>右邊看結果</h2>
+            <p>上面是即時預覽，下面是完整 HTML 原始碼。</p>
+          </div>
+          <div class="panel-body">
+            <iframe
+              id="previewFrame"
+              class="preview-frame"
+              title="preview"
+            ></iframe>
+            <div style="height: 14px"></div>
+            <textarea id="htmlOutput" class="code-box" readonly></textarea>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script>
+      const defaults = {
+        pageTitle: "我的國中數位成長頁",
+        mainTitle: "王小明的國中數位成長頁",
+        subtitle:
+          "記錄我在國中三年學過的技能、最喜歡的作品，以及想送給未來自己的話。",
+        theme: "red",
+        profileImage: "https://via.placeholder.com/180x180?text=Profile",
+        workImage: "https://via.placeholder.com/400x260?text=Work",
+        intro:
+          "大家好，我是王小明。我是一個喜歡動手做、也喜歡慢慢把事情完成的人。\n在國中這幾年，我接觸了簡報、海報設計、程式設計和影片剪輯，也慢慢發現自己其實很喜歡把想法變成作品。",
+        tagsText: "喜歡設計, 喜歡動手做, 願意挑戰新工具",
+        favoriteWork:
+          "我最喜歡的一次作品，是我做的一個 Scratch 小遊戲。\n一開始我常常不知道角色為什麼不會動，也一直改錯地方，但後來我慢慢找到問題，成功把遊戲完成。\n那次讓我覺得，原來遇到困難的時候，只要願意慢慢試，真的可以把作品做出來。",
+        futureMessage:
+          "希望未來的我，不要忘記現在這個願意慢慢學、慢慢做、也不怕一開始不會的自己。\n遇到新的挑戰時，記得先試試看，因為很多能力，都是一步一步練出來的。",
+        footer: "© 2026 我的國中數位成長頁",
+        skills: [
+          {
+            title: "簡報設計",
+            description:
+              "我學會把重點整理清楚，搭配圖片和標題，讓簡報更容易閱讀。",
+          },
+          {
+            title: "Scratch 程式設計",
+            description:
+              "我做過簡單的小遊戲和互動作品，也學會用邏輯一步一步解決問題。",
+          },
+          {
+            title: "海報排版",
+            description:
+              "我學會挑選字體、顏色和版面配置，讓作品看起來更整齊、更有重點。",
+          },
+          {
+            title: "影片剪輯",
+            description: "我接觸過簡單剪輯，知道如何安排畫面順序、音樂和字幕。",
+          },
+        ],
+        growths: [
+          {
+            title: "我做過的事",
+            description:
+              "我完成過幾個數位作品，也慢慢學會把想法整理成看得懂的內容。",
+          },
+          {
+            title: "我學到的事",
+            description:
+              "我發現遇到問題時，不要急著放棄，慢慢試、慢慢改，通常就會找到答案。",
+          },
+          {
+            title: "未來想學的事",
+            description:
+              "未來我想學更多程式設計或設計工具，做出更完整、更有趣的作品。",
+          },
+          {
+            title: "我想變成的人",
+            description:
+              "我希望自己以後遇到新挑戰時，也能保持好奇心和願意學習的態度。",
+          },
+        ],
+      };
+
+      function escapeHtml(text) {
+        return String(text)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      function paragraphize(text) {
+        return escapeHtml(text)
+          .replace(/\n\s*\n+/g, "<br><br>")
+          .replace(/\n/g, "<br>");
+      }
+
+      function tagHtml(tags) {
+        return tags
+          .filter((t) => t.trim())
+          .map(
+            (tag) =>
+              `            <span class="tag">${escapeHtml(tag.trim())}</span>`,
+          )
+          .join("\n");
+      }
+
+      function cardHtml(items, titleFallback, descFallback) {
+        return items
+          .filter((item) => item.title.trim() || item.description.trim())
+          .map(
+            (item) => `        <div class="card">
+          <h3>${escapeHtml(item.title || titleFallback)}</h3>
+          <p>${paragraphize(item.description || descFallback)}</p>
+        </div>`,
+          )
+          .join("\n\n");
+      }
+
+      function getThemeCSS(theme) {
+        const themes = {
+          red: {
+            bgColor: "linear-gradient(135deg, #fbf5f5, #ffffff)",
+            textColor: "#222",
+            headerBg: "linear-gradient(135deg, #e42c2c, #fc8e8e)",
+            headerText: "white",
+            sectionBg: "white",
+            sectionShadow: "rgba(0, 0, 0, 0.08)",
+            h2Color: "#a82c2c",
+            profileBg: "#ffdbe7",
+            profileBorder: "#ffe9f0",
+            tagBg: "#ffeaf2",
+            tagColor: "#a82b2b",
+            cardBg: "#fff8fb",
+            cardBorder: "#ffdce9",
+            cardH3Color: "#a82c2c",
+            workBg: "#ffdbe7",
+            blockquoteBg: "#ffeaf2",
+            blockquoteBorder: "#fe6e6e",
+            footerColor: "#666",
+          },
+          blue: {
+            bgColor: "linear-gradient(135deg, #f0f9ff, #ffffff)",
+            textColor: "#222",
+            headerBg: "linear-gradient(135deg, #3b82f6, #1d4ed8)",
+            headerText: "white",
+            sectionBg: "white",
+            sectionShadow: "rgba(0, 0, 0, 0.08)",
+            h2Color: "#1e40af",
+            profileBg: "#dbeafe",
+            profileBorder: "#bfdbfe",
+            tagBg: "#eff6ff",
+            tagColor: "#1e40af",
+            cardBg: "#f8fafc",
+            cardBorder: "#cbd5e1",
+            cardH3Color: "#1e40af",
+            workBg: "#dbeafe",
+            blockquoteBg: "#eff6ff",
+            blockquoteBorder: "#3b82f6",
+            footerColor: "#666",
+          },
+          green: {
+            bgColor: "linear-gradient(135deg, #f0fdf4, #ffffff)",
+            textColor: "#222",
+            headerBg: "linear-gradient(135deg, #10b981, #059669)",
+            headerText: "white",
+            sectionBg: "white",
+            sectionShadow: "rgba(0, 0, 0, 0.08)",
+            h2Color: "#047857",
+            profileBg: "#d1fae5",
+            profileBorder: "#a7f3d0",
+            tagBg: "#ecfdf5",
+            tagColor: "#047857",
+            cardBg: "#f0fdf4",
+            cardBorder: "#bbf7d0",
+            cardH3Color: "#047857",
+            workBg: "#d1fae5",
+            blockquoteBg: "#ecfdf5",
+            blockquoteBorder: "#10b981",
+            footerColor: "#666",
+          },
+          purple: {
+            bgColor: "linear-gradient(135deg, #faf5ff, #ffffff)",
+            textColor: "#222",
+            headerBg: "linear-gradient(135deg, #a855f7, #7c3aed)",
+            headerText: "white",
+            sectionBg: "white",
+            sectionShadow: "rgba(0, 0, 0, 0.08)",
+            h2Color: "#6b21a8",
+            profileBg: "#e9d5ff",
+            profileBorder: "#d8b4fe",
+            tagBg: "#f3e8ff",
+            tagColor: "#6b21a8",
+            cardBg: "#faf5ff",
+            cardBorder: "#e9d5ff",
+            cardH3Color: "#6b21a8",
+            workBg: "#e9d5ff",
+            blockquoteBg: "#f3e8ff",
+            blockquoteBorder: "#a855f7",
+            footerColor: "#666",
+          },
+          orange: {
+            bgColor: "linear-gradient(135deg, #fff7ed, #ffffff)",
+            textColor: "#222",
+            headerBg: "linear-gradient(135deg, #f97316, #ea580c)",
+            headerText: "white",
+            sectionBg: "white",
+            sectionShadow: "rgba(0, 0, 0, 0.08)",
+            h2Color: "#c2410c",
+            profileBg: "#fed7aa",
+            profileBorder: "#fdba74",
+            tagBg: "#fff7ed",
+            tagColor: "#c2410c",
+            cardBg: "#fff8f2",
+            cardBorder: "#fed7aa",
+            cardH3Color: "#c2410c",
+            workBg: "#fed7aa",
+            blockquoteBg: "#fff7ed",
+            blockquoteBorder: "#f97316",
+            footerColor: "#666",
+          },
+        };
+        return themes[theme] || themes.red;
+      }
+
+      function buildHtml(data) {
+        const theme = getThemeCSS(data.theme);
+        const html = `<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>${escapeHtml(data.pageTitle)}</title>
+  <style>
+    :root {
+      --bg-color: ${theme.bgColor};
+      --text-color: ${theme.textColor};
+      --header-bg: ${theme.headerBg};
+      --header-text: ${theme.headerText};
+      --section-bg: ${theme.sectionBg};
+      --section-shadow: ${theme.sectionShadow};
+      --h2-color: ${theme.h2Color};
+      --profile-bg: ${theme.profileBg};
+      --profile-border: ${theme.profileBorder};
+      --tag-bg: ${theme.tagBg};
+      --tag-color: ${theme.tagColor};
+      --card-bg: ${theme.cardBg};
+      --card-border: ${theme.cardBorder};
+      --card-h3-color: ${theme.cardH3Color};
+      --work-bg: ${theme.workBg};
+      --blockquote-bg: ${theme.blockquoteBg};
+      --blockquote-border: ${theme.blockquoteBorder};
+      --footer-color: ${theme.footerColor};
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      line-height: 1.7;
+    }
+
+    header {
+      background: var(--header-bg);
+      color: var(--header-text);
+      text-align: center;
+      padding: 48px 20px;
+    }
+
+    header h1 {
+      margin: 0 0 10px;
+      font-size: 2.2rem;
+    }
+
+    header p {
+      margin: 0;
+      font-size: 1.05rem;
+    }
+
+    main {
+      max-width: 900px;
+      margin: 24px auto;
+      padding: 0 16px 40px;
+    }
+
+    section {
+      background: var(--section-bg);
+      border-radius: 18px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 6px 18px var(--section-shadow);
+    }
+
+    h2 {
+      margin-top: 0;
+      color: var(--h2-color);
+      font-size: 1.4rem;
+    }
+
+    .intro {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .profile-photo {
+      width: 180px;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 16px;
+      background: var(--profile-bg);
+      border: 4px solid var(--profile-border);
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .tag {
+      background: var(--tag-bg);
+      color: var(--tag-color);
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.95rem;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 16px;
+    }
+
+    .card h3 {
+      margin-top: 0;
+      margin-bottom: 8px;
+      color: var(--card-h3-color);
+    }
+
+    .work-image {
+      width: 100%;
+      max-height: 260px;
+      object-fit: cover;
+      border-radius: 14px;
+      margin-bottom: 12px;
+      background: var(--work-bg);
+    }
+
+    .keep-line-breaks {
+
+        line-height: 1.8;
+    }
+
+    blockquote {
+      margin: 0;
+      padding: 16px 20px;
+      background: var(--blockquote-bg);
+      border-left: 6px solid var(--blockquote-border);
+      border-radius: 12px;
+      font-size: 1.05rem;
+      white-space: pre-wrap;
+    }
+
+    footer {
+      text-align: center;
+      color: var(--footer-color);
+      font-size: 0.95rem;
+      padding: 18px;
+    }
+
+    @media (max-width: 700px) {
+      .intro {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .profile-photo {
+        margin: 0 auto;
+      }
+
+      .tag-list {
+        justify-content: center;
+      }
+
+      .card-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>${escapeHtml(data.mainTitle)}</h1>
+    <p>${escapeHtml(data.subtitle)}</p>
+  </header>
+
+  <main>
+    <section>
+      <div class="intro">
+        <img src="${escapeHtml(data.profileImage || "profile.jpg")}" alt="個人照片" class="profile-photo" />
+        <div>
+          <h2>我是誰</h2>
+          <p>${paragraphize(data.intro)}</p>
+          <div class="tag-list">
+${tagHtml(data.tags)}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>我學過的數位技能</h2>
+      <div class="card-grid">
+${cardHtml(data.skills, "請填技能名稱", "請填技能說明")}
+      </div>
+    </section>
+
+    <section>
+      <h2>我最喜歡的一次作品</h2>
+      <img src="${escapeHtml(data.workImage || "work.jpg")}" alt="作品圖片" class="work-image" />
+      <p class="keep-line-breaks">${paragraphize(data.favoriteWork)}</p>
+    </section>
+
+    <section>
+      <h2>我的成長與目標</h2>
+      <div class="card-grid">
+${cardHtml(data.growths, "請填標題", "請填內容")}
+      </div>
+    </section>
+
+    <section>
+      <h2>我想對未來的自己說</h2>
+      <blockquote>${escapeHtml(data.futureMessage)}</blockquote>
+    </section>
+  </main>
+
+  <footer>
+    ${escapeHtml(data.footer)}
+  </footer>
+</body>
+</html>`;
+        return html;
+      }
+
+      const ids = [
+        "pageTitle",
+        "mainTitle",
+        "subtitle",
+        "theme",
+        "profileImage",
+        "workImage",
+        "intro",
+        "tagsText",
+        "favoriteWork",
+        "futureMessage",
+        "footer",
+      ];
+
+      function makeBlock(
+        titleLabel,
+        descLabel,
+        titleValue,
+        descValue,
+        type,
+        index,
+      ) {
+        const block = document.createElement("div");
+        block.className = "block";
+        block.innerHTML = `
+        <div class="field">
+          <label>${titleLabel} ${index + 1}</label>
+          <input data-type="${type}" data-index="${index}" data-field="title" />
+        </div>
+        <div class="field">
+          <label>${descLabel} ${index + 1}</label>
+          <textarea class="small" data-type="${type}" data-index="${index}" data-field="description"></textarea>
+        </div>
+      `;
+        block.querySelector('[data-field="title"]').value = titleValue;
+        block.querySelector('[data-field="description"]').value = descValue;
+        return block;
+      }
+
+      function fillDefaults() {
+        ids.forEach((id) => {
+          document.getElementById(id).value = defaults[id];
+        });
+
+        const skillsWrap = document.getElementById("skillsWrap");
+        const growthWrap = document.getElementById("growthWrap");
+        skillsWrap.innerHTML = "";
+        growthWrap.innerHTML = "";
+
+        defaults.skills.forEach((item, index) => {
+          skillsWrap.appendChild(
+            makeBlock(
+              "技能標題",
+              "技能說明",
+              item.title,
+              item.description,
+              "skill",
+              index,
+            ),
+          );
+        });
+
+        defaults.growths.forEach((item, index) => {
+          growthWrap.appendChild(
+            makeBlock(
+              "區塊標題",
+              "區塊內容",
+              item.title,
+              item.description,
+              "growth",
+              index,
+            ),
+          );
+        });
+      }
+
+      function collectBlocks(type) {
+        const blocks = [
+          ...document.querySelectorAll(
+            `[data-type="${type}"][data-field="title"]`,
+          ),
+        ];
+        return blocks.map((titleInput) => {
+          const index = titleInput.dataset.index;
+          const descInput = document.querySelector(
+            `[data-type="${type}"][data-index="${index}"][data-field="description"]`,
+          );
+          return {
+            title: titleInput.value,
+            description: descInput.value,
+          };
+        });
+      }
+
+      function collectData() {
+        return {
+          pageTitle: document.getElementById("pageTitle").value,
+          mainTitle: document.getElementById("mainTitle").value,
+          subtitle: document.getElementById("subtitle").value,
+          theme: document.getElementById("theme").value,
+          profileImage: document.getElementById("profileImage").value,
+          workImage: document.getElementById("workImage").value,
+          intro: document.getElementById("intro").value,
+          tags: document
+            .getElementById("tagsText")
+            .value.split(",")
+            .map((t) => t.trim())
+            .filter(Boolean),
+          favoriteWork: document.getElementById("favoriteWork").value,
+          futureMessage: document.getElementById("futureMessage").value,
+          footer: document.getElementById("footer").value,
+          skills: collectBlocks("skill"),
+          growths: collectBlocks("growth"),
+        };
+      }
+
+      function updateOutput() {
+        try {
+          const html = buildHtml(collectData());
+          document.getElementById("htmlOutput").value = html;
+          document.getElementById("previewFrame").srcdoc = html;
+        } catch (error) {
+          console.error("Error updating output:", error);
+        }
+      }
+
+      function setStatus(text) {
+        const status = document.getElementById("status");
+        status.textContent = text;
+        setTimeout(() => {
+          status.textContent = "";
+        }, 1500);
+      }
+
+      document.addEventListener("input", updateOutput);
+
+      document.getElementById("copyBtn").addEventListener("click", async () => {
+        try {
+          const html = document.getElementById("htmlOutput").value;
+          await navigator.clipboard.writeText(html);
+          setStatus("已複製");
+        } catch (error) {
+          console.error("Copy failed:", error);
+          setStatus("複製失敗");
+        }
+      });
+
+      document.getElementById("downloadBtn").addEventListener("click", () => {
+        try {
+          const html = document.getElementById("htmlOutput").value;
+          const blob = new Blob([html], { type: "text/html;charset=utf-8" });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "example.html";
+          a.click();
+          URL.revokeObjectURL(url);
+          setStatus("已下載");
+        } catch (error) {
+          console.error("Download failed:", error);
+          setStatus("下載失敗");
+        }
+      });
+
+      document.getElementById("resetBtn").addEventListener("click", () => {
+        try {
+          fillDefaults();
+          updateOutput();
+          setStatus("已重設");
+        } catch (error) {
+          console.error("Reset failed:", error);
+          setStatus("重設失敗");
+        }
+      });
+
+      try {
+        fillDefaults();
+        updateOutput();
+      } catch (error) {
+        console.error("Initialization failed:", error);
+      }
+    </script>
+  </body>
+</html>
