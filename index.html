@@ -387,6 +387,7 @@
                 下載 example.html
               </button>
               <button class="ghost" id="resetBtn">重設範例</button>
+              <button class="ghost" id="fullscreenBtn">預覽全螢幕</button>
               <span class="status" id="status"></span>
             </div>
             <div class="hint">
@@ -1165,31 +1166,19 @@ ${cardHtml(data.growths, "請填標題", "請填內容")}
         setStatus("已刪除卡片");
       });
 
-      document.getElementById("openPreviewBtn").addEventListener("click", () => {
-        document.getElementById("previewOverlay").classList.add("open");
-        document.body.style.overflow = "hidden";
-        setStatus("已開啟放大預覽");
-      });
-
-      function closeOverlayPreview() {
-        document.getElementById("previewOverlay").classList.remove("open");
-        document.body.style.overflow = "";
-      }
-
-      document.getElementById("closePreviewBtn").addEventListener("click", () => {
-        closeOverlayPreview();
-        setStatus("已關閉放大預覽");
-      });
-
-      document.getElementById("previewOverlay").addEventListener("click", (event) => {
-        if (event.target.id === "previewOverlay") {
-          closeOverlayPreview();
-        }
-      });
-
-      document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape") {
-          closeOverlayPreview();
+      document.getElementById("fullscreenBtn").addEventListener("click", async () => {
+        const container = document.getElementById("previewContainer");
+        try {
+          if (document.fullscreenElement) {
+            await document.exitFullscreen();
+            setStatus("已退出全螢幕");
+          } else {
+            await container.requestFullscreen();
+            setStatus("已進入全螢幕");
+          }
+        } catch (error) {
+          console.error("Fullscreen failed:", error);
+          setStatus("全螢幕失敗");
         }
       });
 
