@@ -87,6 +87,29 @@
         font-size: 1.05rem;
         color: #991b1b;
       }
+      .section-title-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      .mini-btn {
+        border: 1px solid #cbd5e1;
+        border-radius: 999px;
+        background: #fff;
+        color: #334155;
+        padding: 6px 12px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .mini-btn.danger {
+        border-color: #fecaca;
+        color: #b91c1c;
+        background: #fff1f2;
+      }
 
       .grid-2 {
         display: grid;
@@ -287,7 +310,12 @@
               <input id="tagsText" />
             </div>
 
-            <h3 class="section-title">數位技能卡片</h3>
+            <div class="section-title-row">
+              <h3 class="section-title">數位技能卡片</h3>
+              <button type="button" class="mini-btn" id="addSkillBtn">
+                ＋新增技能卡
+              </button>
+            </div>
             <div id="skillsWrap"></div>
 
             <div class="field">
@@ -295,7 +323,12 @@
               <textarea id="favoriteWork"></textarea>
             </div>
 
-            <h3 class="section-title">我的成長與目標</h3>
+            <div class="section-title-row">
+              <h3 class="section-title">我的成長與目標</h3>
+              <button type="button" class="mini-btn" id="addGrowthBtn">
+                ＋新增成長卡
+              </button>
+            </div>
             <div id="growthWrap"></div>
 
             <div class="field">
@@ -314,6 +347,7 @@
                 下載 example.html
               </button>
               <button class="ghost" id="resetBtn">重設範例</button>
+              <button class="ghost" id="fullscreenBtn">預覽全螢幕</button>
               <span class="status" id="status"></span>
             </div>
             <div class="hint">
@@ -329,11 +363,13 @@
             <p>上面是即時預覽，下面是完整 HTML 原始碼。</p>
           </div>
           <div class="panel-body">
-            <iframe
-              id="previewFrame"
-              class="preview-frame"
-              title="preview"
-            ></iframe>
+              <div id="previewContainer">
+                <iframe
+                  id="previewFrame"
+                  class="preview-frame"
+                  title="preview"
+                ></iframe>
+              </div>
             <div style="height: 14px"></div>
             <textarea id="htmlOutput" class="code-box" readonly></textarea>
           </div>
@@ -440,14 +476,18 @@
       }
 
       function getThemeCSS(theme) {
-        const themes = {
+        const baseTheme = {
+          textColor: "#222",
+          headerText: "white",
+          sectionBg: "white",
+          sectionShadow: "rgba(0, 0, 0, 0.08)",
+          footerColor: "#666",
+        };
+
+        const themeOverrides = {
           red: {
             bgColor: "linear-gradient(135deg, #fbf5f5, #ffffff)",
-            textColor: "#222",
             headerBg: "linear-gradient(135deg, #e42c2c, #fc8e8e)",
-            headerText: "white",
-            sectionBg: "white",
-            sectionShadow: "rgba(0, 0, 0, 0.08)",
             h2Color: "#a82c2c",
             profileBg: "#ffdbe7",
             profileBorder: "#ffe9f0",
@@ -459,15 +499,10 @@
             workBg: "#ffdbe7",
             blockquoteBg: "#ffeaf2",
             blockquoteBorder: "#fe6e6e",
-            footerColor: "#666",
           },
           blue: {
             bgColor: "linear-gradient(135deg, #f0f9ff, #ffffff)",
-            textColor: "#222",
             headerBg: "linear-gradient(135deg, #3b82f6, #1d4ed8)",
-            headerText: "white",
-            sectionBg: "white",
-            sectionShadow: "rgba(0, 0, 0, 0.08)",
             h2Color: "#1e40af",
             profileBg: "#dbeafe",
             profileBorder: "#bfdbfe",
@@ -479,15 +514,10 @@
             workBg: "#dbeafe",
             blockquoteBg: "#eff6ff",
             blockquoteBorder: "#3b82f6",
-            footerColor: "#666",
           },
           green: {
             bgColor: "linear-gradient(135deg, #f0fdf4, #ffffff)",
-            textColor: "#222",
             headerBg: "linear-gradient(135deg, #10b981, #059669)",
-            headerText: "white",
-            sectionBg: "white",
-            sectionShadow: "rgba(0, 0, 0, 0.08)",
             h2Color: "#047857",
             profileBg: "#d1fae5",
             profileBorder: "#a7f3d0",
@@ -499,15 +529,10 @@
             workBg: "#d1fae5",
             blockquoteBg: "#ecfdf5",
             blockquoteBorder: "#10b981",
-            footerColor: "#666",
           },
           purple: {
             bgColor: "linear-gradient(135deg, #faf5ff, #ffffff)",
-            textColor: "#222",
             headerBg: "linear-gradient(135deg, #a855f7, #7c3aed)",
-            headerText: "white",
-            sectionBg: "white",
-            sectionShadow: "rgba(0, 0, 0, 0.08)",
             h2Color: "#6b21a8",
             profileBg: "#e9d5ff",
             profileBorder: "#d8b4fe",
@@ -519,15 +544,10 @@
             workBg: "#e9d5ff",
             blockquoteBg: "#f3e8ff",
             blockquoteBorder: "#a855f7",
-            footerColor: "#666",
           },
           orange: {
             bgColor: "linear-gradient(135deg, #fff7ed, #ffffff)",
-            textColor: "#222",
             headerBg: "linear-gradient(135deg, #f97316, #ea580c)",
-            headerText: "white",
-            sectionBg: "white",
-            sectionShadow: "rgba(0, 0, 0, 0.08)",
             h2Color: "#c2410c",
             profileBg: "#fed7aa",
             profileBorder: "#fdba74",
@@ -539,10 +559,13 @@
             workBg: "#fed7aa",
             blockquoteBg: "#fff7ed",
             blockquoteBorder: "#f97316",
-            footerColor: "#666",
           },
         };
-        return themes[theme] || themes.red;
+
+        return {
+          ...baseTheme,
+          ...(themeOverrides[theme] || themeOverrides.red),
+        };
       }
 
       function buildHtml(data) {
@@ -790,6 +813,8 @@ ${cardHtml(data.growths, "請填標題", "請填內容")}
         "futureMessage",
         "footer",
       ];
+      const STORAGE_KEY = "9thgradehtmlgen-data-v1";
+      let updateTimer;
 
       function makeBlock(
         titleLabel,
@@ -802,6 +827,9 @@ ${cardHtml(data.growths, "請填標題", "請填內容")}
         const block = document.createElement("div");
         block.className = "block";
         block.innerHTML = `
+        <div style="display:flex; justify-content:flex-end; margin-bottom:8px;">
+          <button type="button" class="mini-btn danger" data-action="remove-card">刪除這張卡片</button>
+        </div>
         <div class="field">
           <label>${titleLabel} ${index + 1}</label>
           <input data-type="${type}" data-index="${index}" data-field="title" />
@@ -814,6 +842,40 @@ ${cardHtml(data.growths, "請填標題", "請填內容")}
         block.querySelector('[data-field="title"]').value = titleValue;
         block.querySelector('[data-field="description"]').value = descValue;
         return block;
+      }
+
+      function renumberBlocks(type) {
+        const wrap = type === "skill"
+          ? document.getElementById("skillsWrap")
+          : document.getElementById("growthWrap");
+        const titleLabel = type === "skill" ? "技能標題" : "區塊標題";
+        const descLabel = type === "skill" ? "技能說明" : "區塊內容";
+        const blocks = [...wrap.querySelectorAll(".block")];
+        blocks.forEach((block, index) => {
+          const titleInput = block.querySelector('[data-field="title"]');
+          const descInput = block.querySelector('[data-field="description"]');
+          titleInput.dataset.index = index;
+          descInput.dataset.index = index;
+          block.querySelectorAll("label")[0].textContent = `${titleLabel} ${index + 1}`;
+          block.querySelectorAll("label")[1].textContent = `${descLabel} ${index + 1}`;
+        });
+      }
+
+      function addBlock(type) {
+        const wrap = type === "skill"
+          ? document.getElementById("skillsWrap")
+          : document.getElementById("growthWrap");
+        const index = wrap.querySelectorAll(".block").length;
+        const block = makeBlock(
+          type === "skill" ? "技能標題" : "區塊標題",
+          type === "skill" ? "技能說明" : "區塊內容",
+          "",
+          "",
+          type,
+          index,
+        );
+        wrap.appendChild(block);
+        scheduleUpdate();
       }
 
       function fillDefaults() {
@@ -893,6 +955,73 @@ ${cardHtml(data.growths, "請填標題", "請填內容")}
         };
       }
 
+      function saveDraft() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(collectData()));
+        } catch (error) {
+          console.error("Save draft failed:", error);
+        }
+      }
+
+      function loadDraft() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return false;
+          const data = JSON.parse(raw);
+          if (!data || typeof data !== "object") return false;
+
+          ids.forEach((id) => {
+            const el = document.getElementById(id);
+            if (el && Object.hasOwn(data, id) && data[id] != null) {
+              el.value = data[id];
+            }
+          });
+
+          const skillsWrap = document.getElementById("skillsWrap");
+          const growthWrap = document.getElementById("growthWrap");
+          skillsWrap.innerHTML = "";
+          growthWrap.innerHTML = "";
+
+          const skills = Array.isArray(data.skills)
+            ? data.skills
+            : defaults.skills;
+          const growths = Array.isArray(data.growths)
+            ? data.growths
+            : defaults.growths;
+
+          skills.forEach((item, index) => {
+            skillsWrap.appendChild(
+              makeBlock(
+                "技能標題",
+                "技能說明",
+                item.title || "",
+                item.description || "",
+                "skill",
+                index,
+              ),
+            );
+          });
+
+          growths.forEach((item, index) => {
+            growthWrap.appendChild(
+              makeBlock(
+                "區塊標題",
+                "區塊內容",
+                item.title || "",
+                item.description || "",
+                "growth",
+                index,
+              ),
+            );
+          });
+
+          return true;
+        } catch (error) {
+          console.error("Load draft failed:", error);
+          return false;
+        }
+      }
+
       function updateOutput() {
         try {
           const html = buildHtml(collectData());
@@ -911,7 +1040,15 @@ ${cardHtml(data.growths, "請填標題", "請填內容")}
         }, 1500);
       }
 
-      document.addEventListener("input", updateOutput);
+      function scheduleUpdate() {
+        clearTimeout(updateTimer);
+        updateTimer = setTimeout(() => {
+          updateOutput();
+          saveDraft();
+        }, 180);
+      }
+
+      document.addEventListener("input", scheduleUpdate);
 
       document.getElementById("copyBtn").addEventListener("click", async () => {
         try {
@@ -945,6 +1082,7 @@ ${cardHtml(data.growths, "請填標題", "請填內容")}
         try {
           fillDefaults();
           updateOutput();
+          saveDraft();
           setStatus("已重設");
         } catch (error) {
           console.error("Reset failed:", error);
@@ -952,8 +1090,48 @@ ${cardHtml(data.growths, "請填標題", "請填內容")}
         }
       });
 
+      document.getElementById("addSkillBtn").addEventListener("click", () => {
+        addBlock("skill");
+        setStatus("已新增技能卡");
+      });
+
+      document.getElementById("addGrowthBtn").addEventListener("click", () => {
+        addBlock("growth");
+        setStatus("已新增成長卡");
+      });
+
+      document.addEventListener("click", (event) => {
+        const btn = event.target.closest('[data-action="remove-card"]');
+        if (!btn) return;
+        const block = btn.closest(".block");
+        if (!block) return;
+        const titleInput = block.querySelector('[data-field="title"]');
+        const type = titleInput?.dataset.type;
+        block.remove();
+        if (type) renumberBlocks(type);
+        scheduleUpdate();
+        setStatus("已刪除卡片");
+      });
+
+      document.getElementById("fullscreenBtn").addEventListener("click", async () => {
+        const container = document.getElementById("previewContainer");
+        try {
+          if (document.fullscreenElement) {
+            await document.exitFullscreen();
+            setStatus("已退出全螢幕");
+          } else {
+            await container.requestFullscreen();
+            setStatus("已進入全螢幕");
+          }
+        } catch (error) {
+          console.error("Fullscreen failed:", error);
+          setStatus("全螢幕失敗");
+        }
+      });
+
       try {
         fillDefaults();
+        loadDraft();
         updateOutput();
       } catch (error) {
         console.error("Initialization failed:", error);
