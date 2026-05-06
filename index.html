@@ -87,6 +87,29 @@
         font-size: 1.05rem;
         color: #991b1b;
       }
+      .section-title-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      .mini-btn {
+        border: 1px solid #cbd5e1;
+        border-radius: 999px;
+        background: #fff;
+        color: #334155;
+        padding: 6px 12px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .mini-btn.danger {
+        border-color: #fecaca;
+        color: #b91c1c;
+        background: #fff1f2;
+      }
 
       .grid-2 {
         display: grid;
@@ -287,7 +310,12 @@
               <input id="tagsText" />
             </div>
 
-            <h3 class="section-title">數位技能卡片</h3>
+            <div class="section-title-row">
+              <h3 class="section-title">數位技能卡片</h3>
+              <button type="button" class="mini-btn" id="addSkillBtn">
+                ＋新增技能卡
+              </button>
+            </div>
             <div id="skillsWrap"></div>
 
             <div class="field">
@@ -295,7 +323,12 @@
               <textarea id="favoriteWork"></textarea>
             </div>
 
-            <h3 class="section-title">我的成長與目標</h3>
+            <div class="section-title-row">
+              <h3 class="section-title">我的成長與目標</h3>
+              <button type="button" class="mini-btn" id="addGrowthBtn">
+                ＋新增成長卡
+              </button>
+            </div>
             <div id="growthWrap"></div>
 
             <div class="field">
@@ -314,6 +347,7 @@
                 下載 example.html
               </button>
               <button class="ghost" id="resetBtn">重設範例</button>
+              <button class="ghost" id="fullscreenBtn">預覽全螢幕</button>
               <span class="status" id="status"></span>
             </div>
             <div class="hint">
@@ -329,11 +363,13 @@
             <p>上面是即時預覽，下面是完整 HTML 原始碼。</p>
           </div>
           <div class="panel-body">
-            <iframe
-              id="previewFrame"
-              class="preview-frame"
-              title="preview"
-            ></iframe>
+              <div id="previewContainer">
+                <iframe
+                  id="previewFrame"
+                  class="preview-frame"
+                  title="preview"
+                ></iframe>
+              </div>
             <div style="height: 14px"></div>
             <textarea id="htmlOutput" class="code-box" readonly></textarea>
           </div>
@@ -791,6 +827,9 @@ ${cardHtml(data.growths, "請填標題", "請填內容")}
         const block = document.createElement("div");
         block.className = "block";
         block.innerHTML = `
+        <div style="display:flex; justify-content:flex-end; margin-bottom:8px;">
+          <button type="button" class="mini-btn danger" data-action="remove-card">刪除這張卡片</button>
+        </div>
         <div class="field">
           <label>${titleLabel} ${index + 1}</label>
           <input data-type="${type}" data-index="${index}" data-field="title" />
@@ -803,6 +842,40 @@ ${cardHtml(data.growths, "請填標題", "請填內容")}
         block.querySelector('[data-field="title"]').value = titleValue;
         block.querySelector('[data-field="description"]').value = descValue;
         return block;
+      }
+
+      function renumberBlocks(type) {
+        const wrap = type === "skill"
+          ? document.getElementById("skillsWrap")
+          : document.getElementById("growthWrap");
+        const titleLabel = type === "skill" ? "技能標題" : "區塊標題";
+        const descLabel = type === "skill" ? "技能說明" : "區塊內容";
+        const blocks = [...wrap.querySelectorAll(".block")];
+        blocks.forEach((block, index) => {
+          const titleInput = block.querySelector('[data-field="title"]');
+          const descInput = block.querySelector('[data-field="description"]');
+          titleInput.dataset.index = index;
+          descInput.dataset.index = index;
+          block.querySelectorAll("label")[0].textContent = `${titleLabel} ${index + 1}`;
+          block.querySelectorAll("label")[1].textContent = `${descLabel} ${index + 1}`;
+        });
+      }
+
+      function addBlock(type) {
+        const wrap = type === "skill"
+          ? document.getElementById("skillsWrap")
+          : document.getElementById("growthWrap");
+        const index = wrap.querySelectorAll(".block").length;
+        const block = makeBlock(
+          type === "skill" ? "技能標題" : "區塊標題",
+          type === "skill" ? "技能說明" : "區塊內容",
+          "",
+          "",
+          type,
+          index,
+        );
+        wrap.appendChild(block);
+        scheduleUpdate();
       }
 
       function fillDefaults() {
@@ -1014,6 +1087,45 @@ ${cardHtml(data.growths, "請填標題", "請填內容")}
         } catch (error) {
           console.error("Reset failed:", error);
           setStatus("重設失敗");
+        }
+      });
+
+      document.getElementById("addSkillBtn").addEventListener("click", () => {
+        addBlock("skill");
+        setStatus("已新增技能卡");
+      });
+
+      document.getElementById("addGrowthBtn").addEventListener("click", () => {
+        addBlock("growth");
+        setStatus("已新增成長卡");
+      });
+
+      document.addEventListener("click", (event) => {
+        const btn = event.target.closest('[data-action="remove-card"]');
+        if (!btn) return;
+        const block = btn.closest(".block");
+        if (!block) return;
+        const titleInput = block.querySelector('[data-field="title"]');
+        const type = titleInput?.dataset.type;
+        block.remove();
+        if (type) renumberBlocks(type);
+        scheduleUpdate();
+        setStatus("已刪除卡片");
+      });
+
+      document.getElementById("fullscreenBtn").addEventListener("click", async () => {
+        const container = document.getElementById("previewContainer");
+        try {
+          if (document.fullscreenElement) {
+            await document.exitFullscreen();
+            setStatus("已退出全螢幕");
+          } else {
+            await container.requestFullscreen();
+            setStatus("已進入全螢幕");
+          }
+        } catch (error) {
+          console.error("Fullscreen failed:", error);
+          setStatus("全螢幕失敗");
         }
       });
 
