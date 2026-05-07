@@ -82,6 +82,48 @@
         padding: 20px;
       }
 
+      .editor-section {
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        background: #fff;
+        padding: 16px;
+        margin-bottom: 16px;
+      }
+
+      .editor-section-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 14px;
+      }
+
+      .editor-section-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 0 0 4px;
+        font-size: 1.05rem;
+        color: #991b1b;
+      }
+
+      .editor-section-title span {
+        display: inline-grid;
+        place-items: center;
+        width: 28px;
+        height: 28px;
+        border-radius: 999px;
+        background: var(--accent-soft);
+        color: #b91c1c;
+        font-size: 0.85rem;
+      }
+
+      .editor-section-header p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
       .section-title {
         margin: 28px 0 12px;
         font-size: 1.05rem;
@@ -121,11 +163,48 @@
         margin-bottom: 14px;
       }
 
+      .field:last-child {
+        margin-bottom: 0;
+      }
+
       label {
         display: block;
         margin-bottom: 6px;
         font-weight: 700;
         font-size: 0.95rem;
+      }
+
+      .field-help {
+        margin: 6px 0 0;
+        color: var(--muted);
+        font-size: 0.82rem;
+      }
+
+      .field-line {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 6px;
+      }
+
+      .field-line label {
+        margin-bottom: 0;
+      }
+
+      .image-status {
+        flex: 0 0 auto;
+        color: var(--muted);
+        font-size: 0.82rem;
+        font-weight: 700;
+      }
+
+      .image-status.ok {
+        color: #15803d;
+      }
+
+      .image-status.error {
+        color: #b91c1c;
       }
 
       input,
@@ -138,6 +217,14 @@
         font: inherit;
         color: var(--text);
         background: #fff;
+      }
+
+      input:focus,
+      textarea:focus,
+      select:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px var(--accent-soft);
+        outline: none;
       }
 
       textarea {
@@ -202,11 +289,69 @@
       }
 
       .block {
-        border: 1px solid var(--border);
-        background: #fff;
-        border-radius: 18px;
+        border: 1px solid #fecaca;
+        background: #fff8fb;
+        border-radius: 16px;
         padding: 14px;
         margin-bottom: 12px;
+      }
+
+      .block:focus-within {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px var(--accent-soft);
+      }
+
+      .block.dragging {
+        opacity: 0.55;
+      }
+
+      .card-list.drag-over {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px var(--accent-soft);
+      }
+
+      .card-list {
+        display: grid;
+        gap: 12px;
+        border-radius: 16px;
+      }
+
+      .card-list:empty::before {
+        content: "目前沒有卡片，按右上角新增一張。";
+        display: block;
+        border: 1px dashed #fca5a5;
+        border-radius: 14px;
+        padding: 16px;
+        color: var(--muted);
+        background: #fff8fb;
+        text-align: center;
+      }
+
+      .card-edit-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 12px;
+        cursor: grab;
+        user-select: none;
+      }
+
+      .card-edit-header:active {
+        cursor: grabbing;
+      }
+
+      .card-edit-title {
+        margin: 0;
+        color: #991b1b;
+        font-size: 0.95rem;
+      }
+
+      .drag-hint {
+        color: var(--muted);
+        font-size: 0.8rem;
+        font-weight: 700;
+        margin-right: auto;
       }
 
       .preview-frame {
@@ -216,8 +361,52 @@
         border-radius: 16px;
         background: white;
       }
+      #previewContainer:fullscreen {
+        width: 100vw;
+        height: 100vh;
+        background: #fff;
+      }
+      #previewContainer:fullscreen .preview-frame {
+        height: 100%;
+        border: none;
+        border-radius: 0;
+      }
+      #previewContainer:-webkit-full-screen {
+        width: 100vw;
+        height: 100vh;
+        background: #fff;
+      }
+      #previewContainer:-webkit-full-screen .preview-frame {
+        height: 100%;
+        border: none;
+        border-radius: 0;
+      }
       .preview-header-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
         margin-top: 12px;
+      }
+      .view-toggle {
+        display: inline-flex;
+        border: 1px solid #cbd5e1;
+        border-radius: 999px;
+        background: #f8fafc;
+        padding: 3px;
+      }
+      .toggle-btn {
+        border-radius: 999px;
+        background: transparent;
+        color: #334155;
+        padding: 8px 12px;
+        font-size: 0.9rem;
+      }
+      .toggle-btn.active {
+        background: var(--accent);
+        color: #fff;
+      }
+      .preview-panel[hidden] {
+        display: none;
       }
       .preview-overlay {
         position: fixed;
@@ -276,6 +465,9 @@
         .page {
           padding: 14px;
         }
+        .editor-section-header {
+          flex-direction: column;
+        }
       }
     </style>
   </head>
@@ -296,103 +488,175 @@
             <p>學生只要輸入文字與圖片檔名，不需要碰 React 或 npm。</p>
           </div>
           <div class="panel-body">
-            <div class="grid-2">
-              <div class="field">
-                <label for="pageTitle">網站標題</label>
-                <input id="pageTitle" />
+            <div class="editor-section">
+              <div class="editor-section-header">
+                <div>
+                  <h3 class="editor-section-title"><span>1</span>頁面開頭</h3>
+                  <p>這些文字會出現在網頁最上方和瀏覽器分頁。</p>
+                </div>
               </div>
-              <div class="field">
-                <label for="mainTitle">首頁大標題</label>
-                <input id="mainTitle" />
+              <div class="grid-2">
+                <div class="field">
+                  <label for="pageTitle">瀏覽器分頁標題</label>
+                  <input id="pageTitle" />
+                  <p class="field-help">通常是一句短短的網站名稱。</p>
+                </div>
+                <div class="field">
+                  <label for="mainTitle">網頁大標題</label>
+                  <input id="mainTitle" />
+                  <p class="field-help">會顯示在網頁第一眼看到的位置。</p>
+                </div>
               </div>
-            </div>
 
-            <div class="field">
-              <label for="subtitle">一句簡介</label>
-              <input id="subtitle" />
-            </div>
-
-            <div class="field">
-              <label for="theme">選擇主題顏色</label>
-              <select id="theme">
-                <option value="red">紅色主題</option>
-                <option value="blue">藍色主題</option>
-                <option value="green">綠色主題</option>
-                <option value="purple">紫色主題</option>
-                <option value="orange">橘色主題</option>
-              </select>
-            </div>
-
-            <div class="grid-2">
               <div class="field">
-                <label for="profileImage">個人圖片 URL</label>
-                <input
-                  id="profileImage"
-                  placeholder="https://example.com/photo.jpg"
-                />
+                <label for="subtitle">一句簡介</label>
+                <input id="subtitle" />
+                <p class="field-help">用一句話說明這個頁面想介紹什麼。</p>
               </div>
+
               <div class="field">
-                <label for="workImage">作品圖片 URL</label>
-                <input
-                  id="workImage"
-                  placeholder="https://example.com/work.jpg"
-                />
+                <label for="theme">主題顏色</label>
+                <select id="theme">
+                  <option value="red">紅色主題</option>
+                  <option value="blue">藍色主題</option>
+                  <option value="green">綠色主題</option>
+                  <option value="purple">紫色主題</option>
+                  <option value="orange">橘色主題</option>
+                </select>
               </div>
             </div>
 
-            <div class="field">
-              <label for="intro">我是誰</label>
-              <textarea id="intro"></textarea>
+            <div class="editor-section">
+              <div class="editor-section-header">
+                <div>
+                  <h3 class="editor-section-title"><span>2</span>圖片</h3>
+                  <p>放入個人照和代表作品圖，讓頁面更容易被理解。</p>
+                </div>
+              </div>
+              <div class="grid-2">
+                <div class="field">
+                  <div class="field-line">
+                    <label for="profileImage">個人圖片 URL</label>
+                    <span class="image-status" id="profileImageStatus">尚未測試</span>
+                  </div>
+                  <input
+                    id="profileImage"
+                    placeholder="https://example.com/photo.jpg"
+                  />
+                  <p class="field-help">建議使用正方形或接近正方形的圖片。</p>
+                </div>
+                <div class="field">
+                  <div class="field-line">
+                    <label for="workImage">作品圖片 URL</label>
+                    <span class="image-status" id="workImageStatus">尚未測試</span>
+                  </div>
+                  <input
+                    id="workImage"
+                    placeholder="https://example.com/work.jpg"
+                  />
+                  <p class="field-help">這張圖會放在作品介紹區塊。</p>
+                </div>
+              </div>
             </div>
 
-            <div class="field">
-              <label for="tagsText">個人標籤（用逗號分隔）</label>
-              <input id="tagsText" />
+            <div class="editor-section">
+              <div class="editor-section-header">
+                <div>
+                  <h3 class="editor-section-title"><span>3</span>我是誰</h3>
+                  <p>介紹自己的興趣、個性和這幾年學到的事。</p>
+                </div>
+              </div>
+              <div class="field">
+                <label for="intro">自我介紹</label>
+                <textarea id="intro"></textarea>
+                <p class="field-help">可以分段輸入，換行會保留在預覽中。</p>
+              </div>
+
+              <div class="field">
+                <label for="tagsText">個人標籤</label>
+                <input id="tagsText" />
+                <p class="field-help">用逗號分隔，例如：喜歡設計, 願意嘗試, 會寫程式。</p>
+              </div>
             </div>
 
-            <div class="section-title-row">
-              <h3 class="section-title">數位技能卡片</h3>
-              <button type="button" class="mini-btn" id="addSkillBtn">
-                ＋新增技能卡
-              </button>
-            </div>
-            <div id="skillsWrap"></div>
-
-            <div class="field">
-              <label for="favoriteWork">我最喜歡的一次作品</label>
-              <textarea id="favoriteWork"></textarea>
-            </div>
-
-            <div class="section-title-row">
-              <h3 class="section-title">我的成長與目標</h3>
-              <button type="button" class="mini-btn" id="addGrowthBtn">
-                ＋新增成長卡
-              </button>
-            </div>
-            <div id="growthWrap"></div>
-
-            <div class="field">
-              <label for="futureMessage">我想對未來的自己說</label>
-              <textarea id="futureMessage"></textarea>
+            <div class="editor-section">
+              <div class="editor-section-header">
+                <div>
+                  <h3 class="editor-section-title"><span>4</span>科技技能卡片</h3>
+                  <p>每張卡片就是一項科技技能，可以新增或刪除。</p>
+                </div>
+                <button type="button" class="mini-btn" id="addSkillBtn">
+                  ＋新增科技技能卡
+                </button>
+              </div>
+              <div id="skillsWrap" class="card-list"></div>
             </div>
 
-            <div class="field">
-              <label for="footer">頁尾文字</label>
-              <input id="footer" />
+            <div class="editor-section">
+              <div class="editor-section-header">
+                <div>
+                  <h3 class="editor-section-title"><span>5</span>最喜歡的作品/一堂課</h3>
+                  <p>描述一個最有印象、最想展示的作品或課堂經驗。</p>
+                </div>
+              </div>
+              <div class="field">
+                <label for="favoriteWork">作品/課堂故事</label>
+                <textarea id="favoriteWork"></textarea>
+                <p class="field-help">可以寫遇到的困難、解決方法、上課過程和學到的事。</p>
+              </div>
             </div>
 
-            <div class="button-row">
-              <button class="primary" id="copyBtn">複製 HTML</button>
-              <button class="secondary" id="downloadBtn">
-                下載 example.html
-              </button>
-              <button class="ghost" id="resetBtn">重設範例</button>
-              <button class="ghost" id="fullscreenBtn">預覽全螢幕</button>
-              <span class="status" id="status"></span>
+            <div class="editor-section">
+              <div class="editor-section-header">
+                <div>
+                  <h3 class="editor-section-title"><span>6</span>成長與目標卡片</h3>
+                  <p>每張卡片是一個成長重點或未來目標。</p>
+                </div>
+                <button type="button" class="mini-btn" id="addGrowthBtn">
+                  ＋新增成長卡
+                </button>
+              </div>
+              <div id="growthWrap" class="card-list"></div>
             </div>
-            <div class="hint">
-              📸 使用外部圖片 URL：Imgur、Pinterest、Google Photos
-              等任何可公開訪問的圖片連接。複製圖片連結貼入即可。
+
+            <div class="editor-section">
+              <div class="editor-section-header">
+                <div>
+                  <h3 class="editor-section-title"><span>7</span>未來留言</h3>
+                  <p>寫一段想留給未來自己的話。</p>
+                </div>
+              </div>
+              <div class="field">
+                <label for="futureMessage">給未來的自己</label>
+                <textarea id="futureMessage"></textarea>
+              </div>
+
+              <div class="field">
+                <label for="footer">頁尾文字</label>
+                <input id="footer" />
+              </div>
+            </div>
+
+            <div class="editor-section">
+              <div class="editor-section-header">
+                <div>
+                  <h3 class="editor-section-title"><span>8</span>輸出網頁</h3>
+                  <p>確認右邊預覽後，複製或下載完整 HTML。</p>
+                </div>
+              </div>
+              <div class="button-row">
+                <button class="primary" id="copyBtn">複製 HTML</button>
+                <button class="secondary" id="downloadBtn">
+                  下載 example.html
+                </button>
+                <button class="ghost" id="resetBtn">重設範例</button>
+                <button class="ghost" id="fullscreenBtn">預覽全螢幕</button>
+                <span class="status" id="status"></span>
+              </div>
+              <div class="hint">
+                圖片請使用公開圖片 URL，例如 Imgur、Pinterest、Google Photos
+                等任何可公開訪問的圖片連結。複製圖片連結貼入即可。
+              </div>
             </div>
           </div>
         </section>
@@ -402,19 +666,26 @@
             <h2>右邊看結果</h2>
             <p>上面是即時預覽，下面是完整 HTML 原始碼。</p>
             <div class="preview-header-actions">
+              <div class="view-toggle" aria-label="切換右側顯示">
+                <button type="button" class="toggle-btn active" id="previewViewBtn">
+                  只看預覽
+                </button>
+                <button type="button" class="toggle-btn" id="htmlViewBtn">
+                  看 HTML
+                </button>
+              </div>
               <button class="ghost" id="openPreviewBtn">🔎 放大預覽</button>
             </div>
           </div>
           <div class="panel-body">
-              <div id="previewContainer">
+              <div id="previewContainer" class="preview-panel">
                 <iframe
                   id="previewFrame"
                   class="preview-frame"
                   title="preview"
                 ></iframe>
               </div>
-            <div style="height: 14px"></div>
-            <textarea id="htmlOutput" class="code-box" readonly></textarea>
+            <textarea id="htmlOutput" class="code-box preview-panel" readonly hidden></textarea>
           </div>
         </section>
       </div>
@@ -434,7 +705,7 @@
         pageTitle: "我的國中數位成長頁",
         mainTitle: "王小明的國中數位成長頁",
         subtitle:
-          "記錄我在國中三年學過的技能、最喜歡的作品，以及想送給未來自己的話。",
+          "記錄我在國中三年學過的科技技能、最喜歡的作品或一堂課，以及想送給未來自己的話。",
         theme: "red",
         profileImage: "https://via.placeholder.com/180x180?text=Profile",
         workImage: "https://via.placeholder.com/400x260?text=Work",
@@ -442,7 +713,7 @@
           "大家好，我是王小明。我是一個喜歡動手做、也喜歡慢慢把事情完成的人。\n在國中這幾年，我接觸了簡報、海報設計、程式設計和影片剪輯，也慢慢發現自己其實很喜歡把想法變成作品。",
         tagsText: "喜歡設計, 喜歡動手做, 願意挑戰新工具",
         favoriteWork:
-          "我最喜歡的一次作品，是我做的一個 Scratch 小遊戲。\n一開始我常常不知道角色為什麼不會動，也一直改錯地方，但後來我慢慢找到問題，成功把遊戲完成。\n那次讓我覺得，原來遇到困難的時候，只要願意慢慢試，真的可以把作品做出來。",
+          "我最喜歡的一次作品/一堂課，是我做 Scratch 小遊戲的那次課程。\n一開始我常常不知道角色為什麼不會動，也一直改錯地方，但後來我慢慢找到問題，成功把遊戲完成。\n那次讓我覺得，原來遇到困難的時候，只要願意慢慢試，真的可以把作品做出來。",
         futureMessage:
           "希望未來的我，不要忘記現在這個願意慢慢學、慢慢做、也不怕一開始不會的自己。\n遇到新的挑戰時，記得先試試看，因為很多能力，都是一步一步練出來的。",
         footer: "© 2026 我的國中數位成長頁",
@@ -528,100 +799,50 @@
       }
 
       function getThemeCSS(theme) {
-        const baseTheme = {
-          textColor: "#222",
-          headerText: "white",
-          sectionBg: "white",
-          sectionShadow: "rgba(0, 0, 0, 0.08)",
-          footerColor: "#666",
-        };
-
         const themeOverrides = {
           red: {
-            bgColor: "linear-gradient(135deg, #fbf5f5, #ffffff)",
-            headerBg: "linear-gradient(135deg, #e42c2c, #fc8e8e)",
-            h2Color: "#a82c2c",
-            profileBg: "#ffdbe7",
-            profileBorder: "#ffe9f0",
-            tagBg: "#ffeaf2",
-            tagColor: "#a82b2b",
-            cardBg: "#fff8fb",
-            cardBorder: "#ffdce9",
-            cardH3Color: "#a82c2c",
-            workBg: "#ffdbe7",
-            blockquoteBg: "#ffeaf2",
-            blockquoteBorder: "#fe6e6e",
+            bg: "#fff8fb",
+            accent: "#e42c2c",
+            accent2: "#fc8e8e",
+            soft: "#ffeaf2",
+            border: "#ffdce9",
           },
           blue: {
-            bgColor: "linear-gradient(135deg, #f0f9ff, #ffffff)",
-            headerBg: "linear-gradient(135deg, #3b82f6, #1d4ed8)",
-            h2Color: "#1e40af",
-            profileBg: "#dbeafe",
-            profileBorder: "#bfdbfe",
-            tagBg: "#eff6ff",
-            tagColor: "#1e40af",
-            cardBg: "#f8fafc",
-            cardBorder: "#cbd5e1",
-            cardH3Color: "#1e40af",
-            workBg: "#dbeafe",
-            blockquoteBg: "#eff6ff",
-            blockquoteBorder: "#3b82f6",
+            bg: "#f0f9ff",
+            accent: "#1d4ed8",
+            accent2: "#3b82f6",
+            soft: "#eff6ff",
+            border: "#bfdbfe",
           },
           green: {
-            bgColor: "linear-gradient(135deg, #f0fdf4, #ffffff)",
-            headerBg: "linear-gradient(135deg, #10b981, #059669)",
-            h2Color: "#047857",
-            profileBg: "#d1fae5",
-            profileBorder: "#a7f3d0",
-            tagBg: "#ecfdf5",
-            tagColor: "#047857",
-            cardBg: "#f0fdf4",
-            cardBorder: "#bbf7d0",
-            cardH3Color: "#047857",
-            workBg: "#d1fae5",
-            blockquoteBg: "#ecfdf5",
-            blockquoteBorder: "#10b981",
+            bg: "#f0fdf4",
+            accent: "#047857",
+            accent2: "#10b981",
+            soft: "#ecfdf5",
+            border: "#bbf7d0",
           },
           purple: {
-            bgColor: "linear-gradient(135deg, #faf5ff, #ffffff)",
-            headerBg: "linear-gradient(135deg, #a855f7, #7c3aed)",
-            h2Color: "#6b21a8",
-            profileBg: "#e9d5ff",
-            profileBorder: "#d8b4fe",
-            tagBg: "#f3e8ff",
-            tagColor: "#6b21a8",
-            cardBg: "#faf5ff",
-            cardBorder: "#e9d5ff",
-            cardH3Color: "#6b21a8",
-            workBg: "#e9d5ff",
-            blockquoteBg: "#f3e8ff",
-            blockquoteBorder: "#a855f7",
+            bg: "#faf5ff",
+            accent: "#7c3aed",
+            accent2: "#a855f7",
+            soft: "#f3e8ff",
+            border: "#e9d5ff",
           },
           orange: {
-            bgColor: "linear-gradient(135deg, #fff7ed, #ffffff)",
-            headerBg: "linear-gradient(135deg, #f97316, #ea580c)",
-            h2Color: "#c2410c",
-            profileBg: "#fed7aa",
-            profileBorder: "#fdba74",
-            tagBg: "#fff7ed",
-            tagColor: "#c2410c",
-            cardBg: "#fff8f2",
-            cardBorder: "#fed7aa",
-            cardH3Color: "#c2410c",
-            workBg: "#fed7aa",
-            blockquoteBg: "#fff7ed",
-            blockquoteBorder: "#f97316",
+            bg: "#fff7ed",
+            accent: "#ea580c",
+            accent2: "#f97316",
+            soft: "#fff7ed",
+            border: "#fed7aa",
           },
         };
 
-        return {
-          ...baseTheme,
-          ...(themeOverrides[theme] || themeOverrides.red),
-        };
+        return themeOverrides[theme] || themeOverrides.red;
       }
 
       function buildHtml(data) {
         const theme = getThemeCSS(data.theme);
+        const hasProfileImage = data.profileImage.trim();
         const html = `<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
@@ -630,24 +851,11 @@
   <title>${escapeHtml(data.pageTitle)}</title>
   <style>
     :root {
-      --bg-color: ${theme.bgColor};
-      --text-color: ${theme.textColor};
-      --header-bg: ${theme.headerBg};
-      --header-text: ${theme.headerText};
-      --section-bg: ${theme.sectionBg};
-      --section-shadow: ${theme.sectionShadow};
-      --h2-color: ${theme.h2Color};
-      --profile-bg: ${theme.profileBg};
-      --profile-border: ${theme.profileBorder};
-      --tag-bg: ${theme.tagBg};
-      --tag-color: ${theme.tagColor};
-      --card-bg: ${theme.cardBg};
-      --card-border: ${theme.cardBorder};
-      --card-h3-color: ${theme.cardH3Color};
-      --work-bg: ${theme.workBg};
-      --blockquote-bg: ${theme.blockquoteBg};
-      --blockquote-border: ${theme.blockquoteBorder};
-      --footer-color: ${theme.footerColor};
+      --bg: ${theme.bg};
+      --accent: ${theme.accent};
+      --accent-2: ${theme.accent2};
+      --soft: ${theme.soft};
+      --border: ${theme.border};
     }
 
     * { box-sizing: border-box; }
@@ -655,26 +863,16 @@
     body {
       margin: 0;
       font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
-      background: var(--bg-color);
-      color: var(--text-color);
+      background: linear-gradient(135deg, var(--bg), #fff);
+      color: #222;
       line-height: 1.7;
     }
 
     header {
-      background: var(--header-bg);
-      color: var(--header-text);
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: white;
       text-align: center;
       padding: 48px 20px;
-    }
-
-    header h1 {
-      margin: 0 0 10px;
-      font-size: 2.2rem;
-    }
-
-    header p {
-      margin: 0;
-      font-size: 1.05rem;
     }
 
     main {
@@ -684,18 +882,15 @@
     }
 
     section {
-      background: var(--section-bg);
+      background: white;
       border-radius: 18px;
       padding: 24px;
       margin-bottom: 20px;
-      box-shadow: 0 6px 18px var(--section-shadow);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
     }
 
-    h2 {
-      margin-top: 0;
-      color: var(--h2-color);
-      font-size: 1.4rem;
-    }
+    h1, h2, h3, p { margin-top: 0; }
+    h2, h3 { color: var(--accent); }
 
     .intro {
       display: grid;
@@ -704,76 +899,73 @@
       align-items: center;
     }
 
+    .intro.no-photo {
+      grid-template-columns: 1fr;
+    }
+
     .profile-photo {
       width: 180px;
       height: 180px;
       object-fit: cover;
       border-radius: 16px;
-      background: var(--profile-bg);
-      border: 4px solid var(--profile-border);
+      background: var(--soft);
+      border: 4px solid var(--border);
+    }
+
+    .tag-list, .card-grid {
+      display: grid;
+      gap: 12px;
     }
 
     .tag-list {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
       margin-top: 12px;
     }
 
+    .tag, .card, blockquote {
+      background: var(--soft);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+    }
+
     .tag {
-      background: var(--tag-bg);
-      color: var(--tag-color);
+      color: var(--accent);
       padding: 6px 12px;
-      border-radius: 999px;
-      font-size: 0.95rem;
     }
 
     .card-grid {
-      display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 16px;
     }
 
     .card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 14px;
       padding: 16px;
-    }
-
-    .card h3 {
-      margin-top: 0;
-      margin-bottom: 8px;
-      color: var(--card-h3-color);
     }
 
     .work-image {
       width: 100%;
-      max-height: 260px;
-      object-fit: cover;
+      max-width: 760px;
+      max-height: 420px;
+      object-fit: contain;
       border-radius: 14px;
       margin-bottom: 12px;
-      background: var(--work-bg);
-    }
-
-    .keep-line-breaks {
-
-        line-height: 1.8;
+      background: var(--soft);
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     blockquote {
       margin: 0;
       padding: 16px 20px;
-      background: var(--blockquote-bg);
-      border-left: 6px solid var(--blockquote-border);
-      border-radius: 12px;
-      font-size: 1.05rem;
+      border-left: 6px solid var(--accent-2);
       white-space: pre-wrap;
     }
 
     footer {
       text-align: center;
-      color: var(--footer-color);
+      color: #666;
       font-size: 0.95rem;
       padding: 18px;
     }
@@ -806,8 +998,8 @@
 
   <main>
     <section>
-      <div class="intro">
-        <img src="${escapeHtml(data.profileImage || "profile.jpg")}" alt="個人照片" class="profile-photo" />
+      <div class="intro${hasProfileImage ? "" : " no-photo"}">
+        ${hasProfileImage ? `<img src="${escapeHtml(data.profileImage)}" alt="個人照片" class="profile-photo" onerror="this.closest('.intro').classList.add('no-photo'); this.remove()" />` : ""}
         <div>
           <h2>我是誰</h2>
           <p>${paragraphize(data.intro)}</p>
@@ -819,15 +1011,15 @@ ${tagHtml(data.tags)}
     </section>
 
     <section>
-      <h2>我學過的數位技能</h2>
+      <h2>我學過的科技技能</h2>
       <div class="card-grid">
-${cardHtml(data.skills, "請填技能名稱", "請填技能說明")}
+${cardHtml(data.skills, "請填科技技能名稱", "請填科技技能說明")}
       </div>
     </section>
 
     <section>
-      <h2>我最喜歡的一次作品</h2>
-      <img src="${escapeHtml(data.workImage || "work.jpg")}" alt="作品圖片" class="work-image" />
+      <h2>我最喜歡的作品/一堂課</h2>
+      <img src="${escapeHtml(data.workImage || "work.jpg")}" alt="作品圖片" class="work-image" onerror="this.remove()" />
       <p class="keep-line-breaks">${paragraphize(data.favoriteWork)}</p>
     </section>
 
@@ -867,6 +1059,10 @@ ${cardHtml(data.growths, "請填標題", "請填內容")}
       ];
       const STORAGE_KEY = "9thgradehtmlgen-data-v1";
       let updateTimer;
+      const imageTests = {
+        profileImage: { url: "", token: 0 },
+        workImage: { url: "", token: 0 },
+      };
 
       function makeBlock(
         titleLabel,
@@ -878,8 +1074,11 @@ ${cardHtml(data.growths, "請填標題", "請填內容")}
       ) {
         const block = document.createElement("div");
         block.className = "block";
+        const cardName = type === "skill" ? "科技技能卡" : "成長卡";
         block.innerHTML = `
-        <div style="display:flex; justify-content:flex-end; margin-bottom:8px;">
+        <div class="card-edit-header" draggable="true">
+          <h4 class="card-edit-title">${cardName} ${index + 1}</h4>
+          <span class="drag-hint">拖曳排序</span>
           <button type="button" class="mini-btn danger" data-action="remove-card">刪除這張卡片</button>
         </div>
         <div class="field">
@@ -900,14 +1099,16 @@ ${cardHtml(data.growths, "請填標題", "請填內容")}
         const wrap = type === "skill"
           ? document.getElementById("skillsWrap")
           : document.getElementById("growthWrap");
-        const titleLabel = type === "skill" ? "技能標題" : "區塊標題";
-        const descLabel = type === "skill" ? "技能說明" : "區塊內容";
+        const titleLabel = type === "skill" ? "科技技能標題" : "區塊標題";
+        const descLabel = type === "skill" ? "科技技能說明" : "區塊內容";
         const blocks = [...wrap.querySelectorAll(".block")];
         blocks.forEach((block, index) => {
           const titleInput = block.querySelector('[data-field="title"]');
           const descInput = block.querySelector('[data-field="description"]');
           titleInput.dataset.index = index;
           descInput.dataset.index = index;
+          block.querySelector(".card-edit-title").textContent =
+            `${type === "skill" ? "科技技能卡" : "成長卡"} ${index + 1}`;
           block.querySelectorAll("label")[0].textContent = `${titleLabel} ${index + 1}`;
           block.querySelectorAll("label")[1].textContent = `${descLabel} ${index + 1}`;
         });
@@ -919,8 +1120,8 @@ ${cardHtml(data.growths, "請填標題", "請填內容")}
           : document.getElementById("growthWrap");
         const index = wrap.querySelectorAll(".block").length;
         const block = makeBlock(
-          type === "skill" ? "技能標題" : "區塊標題",
-          type === "skill" ? "技能說明" : "區塊內容",
+          type === "skill" ? "科技技能標題" : "區塊標題",
+          type === "skill" ? "科技技能說明" : "區塊內容",
           "",
           "",
           type,
@@ -928,6 +1129,35 @@ ${cardHtml(data.growths, "請填標題", "請填內容")}
         );
         wrap.appendChild(block);
         scheduleUpdate();
+        setTimeout(() => {
+          block.scrollIntoView({ behavior: "smooth", block: "center" });
+          block.querySelector("input")?.focus();
+        }, 0);
+      }
+
+      function getDragAfterElement(container, y) {
+        const draggableBlocks = [
+          ...container.querySelectorAll(".block:not(.dragging)"),
+        ];
+
+        return draggableBlocks.reduce(
+          (closest, child) => {
+            const box = child.getBoundingClientRect();
+            const offset = y - box.top - box.height / 2;
+
+            if (offset < 0 && offset > closest.offset) {
+              return { offset, element: child };
+            }
+
+            return closest;
+          },
+          { offset: Number.NEGATIVE_INFINITY, element: null },
+        ).element;
+      }
+
+      function clearDragStyles() {
+        document.querySelectorAll(".block.dragging, .card-list.drag-over")
+          .forEach((element) => element.classList.remove("dragging", "drag-over"));
       }
 
       function fillDefaults() {
@@ -943,8 +1173,8 @@ ${cardHtml(data.growths, "請填標題", "請填內容")}
         defaults.skills.forEach((item, index) => {
           skillsWrap.appendChild(
             makeBlock(
-              "技能標題",
-              "技能說明",
+              "科技技能標題",
+              "科技技能說明",
               item.title,
               item.description,
               "skill",
@@ -1024,7 +1254,11 @@ ${cardHtml(data.growths, "請填標題", "請填內容")}
 
           ids.forEach((id) => {
             const el = document.getElementById(id);
-            if (el && Object.hasOwn(data, id) && data[id] != null) {
+            if (
+              el &&
+              Object.prototype.hasOwnProperty.call(data, id) &&
+              data[id] != null
+            ) {
               el.value = data[id];
             }
           });
@@ -1044,8 +1278,8 @@ ${cardHtml(data.growths, "請填標題", "請填內容")}
           skills.forEach((item, index) => {
             skillsWrap.appendChild(
               makeBlock(
-                "技能標題",
-                "技能說明",
+                "科技技能標題",
+                "科技技能說明",
                 item.title || "",
                 item.description || "",
                 "skill",
@@ -1076,10 +1310,12 @@ ${cardHtml(data.growths, "請填標題", "請填內容")}
 
       function updateOutput() {
         try {
-          const html = buildHtml(collectData());
+          const data = collectData();
+          const html = buildHtml(data);
           document.getElementById("htmlOutput").value = html;
           document.getElementById("previewFrame").srcdoc = html;
           document.getElementById("overlayPreviewFrame").srcdoc = html;
+          updateImageTests(data);
         } catch (error) {
           console.error("Error updating output:", error);
         }
@@ -1091,6 +1327,86 @@ ${cardHtml(data.growths, "請填標題", "請填內容")}
         setTimeout(() => {
           status.textContent = "";
         }, 1500);
+      }
+
+      async function copyText(text) {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(text);
+          return;
+        }
+
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        textarea.setAttribute("readonly", "");
+        textarea.style.position = "fixed";
+        textarea.style.top = "-9999px";
+        document.body.appendChild(textarea);
+        textarea.select();
+        const copied = document.execCommand("copy");
+        document.body.removeChild(textarea);
+
+        if (!copied) {
+          throw new Error("Fallback copy command failed.");
+        }
+      }
+
+      function setPreviewOverlay(open) {
+        const overlay = document.getElementById("previewOverlay");
+        overlay.classList.toggle("open", open);
+        overlay.setAttribute("aria-hidden", String(!open));
+      }
+
+      function setImageStatus(id, text, state) {
+        const status = document.getElementById(`${id}Status`);
+        if (!status) return;
+        status.textContent = text;
+        status.classList.toggle("ok", state === "ok");
+        status.classList.toggle("error", state === "error");
+      }
+
+      function testImageUrl(id, url) {
+        const test = imageTests[id];
+        const trimmedUrl = String(url || "").trim();
+
+        if (!trimmedUrl) {
+          test.url = "";
+          test.token += 1;
+          setImageStatus(id, "尚未輸入", "");
+          return;
+        }
+
+        if (test.url === trimmedUrl) return;
+
+        test.url = trimmedUrl;
+        test.token += 1;
+        const token = test.token;
+        setImageStatus(id, "測試中...", "");
+
+        const image = new Image();
+        image.onload = () => {
+          if (imageTests[id].token === token) {
+            setImageStatus(id, "圖片可用", "ok");
+          }
+        };
+        image.onerror = () => {
+          if (imageTests[id].token === token) {
+            setImageStatus(id, "無法載入", "error");
+          }
+        };
+        image.src = trimmedUrl;
+      }
+
+      function updateImageTests(data) {
+        testImageUrl("profileImage", data.profileImage);
+        testImageUrl("workImage", data.workImage);
+      }
+
+      function setResultView(view) {
+        const showHtml = view === "html";
+        document.getElementById("previewContainer").hidden = showHtml;
+        document.getElementById("htmlOutput").hidden = !showHtml;
+        document.getElementById("previewViewBtn").classList.toggle("active", !showHtml);
+        document.getElementById("htmlViewBtn").classList.toggle("active", showHtml);
       }
 
       function scheduleUpdate() {
@@ -1106,7 +1422,7 @@ ${cardHtml(data.growths, "請填標題", "請填內容")}
       document.getElementById("copyBtn").addEventListener("click", async () => {
         try {
           const html = document.getElementById("htmlOutput").value;
-          await navigator.clipboard.writeText(html);
+          await copyText(html);
           setStatus("已複製");
         } catch (error) {
           console.error("Copy failed:", error);
@@ -1123,7 +1439,7 @@ ${cardHtml(data.growths, "請填標題", "請填內容")}
           a.href = url;
           a.download = "example.html";
           a.click();
-          URL.revokeObjectURL(url);
+          setTimeout(() => URL.revokeObjectURL(url), 0);
           setStatus("已下載");
         } catch (error) {
           console.error("Download failed:", error);
@@ -1145,12 +1461,20 @@ ${cardHtml(data.growths, "請填標題", "請填內容")}
 
       document.getElementById("addSkillBtn").addEventListener("click", () => {
         addBlock("skill");
-        setStatus("已新增技能卡");
+        setStatus("已新增科技技能卡");
       });
 
       document.getElementById("addGrowthBtn").addEventListener("click", () => {
         addBlock("growth");
         setStatus("已新增成長卡");
+      });
+
+      document.getElementById("previewViewBtn").addEventListener("click", () => {
+        setResultView("preview");
+      });
+
+      document.getElementById("htmlViewBtn").addEventListener("click", () => {
+        setResultView("html");
       });
 
       document.addEventListener("click", (event) => {
@@ -1166,6 +1490,90 @@ ${cardHtml(data.growths, "請填標題", "請填內容")}
         setStatus("已刪除卡片");
       });
 
+      document.addEventListener("dragstart", (event) => {
+        const block = event.target.closest(".block");
+        if (!block) return;
+        const handle = event.target.closest(".card-edit-header");
+        if (!handle) {
+          event.preventDefault();
+          return;
+        }
+        if (event.target.closest('[data-action="remove-card"]')) {
+          event.preventDefault();
+          return;
+        }
+        const titleInput = block.querySelector('[data-field="title"]');
+        event.dataTransfer.effectAllowed = "move";
+        event.dataTransfer.setData("text/plain", titleInput?.dataset.type || "");
+        event.dataTransfer.setDragImage(block, 20, 20);
+        block.classList.add("dragging");
+      });
+
+      document.addEventListener("dragend", () => {
+        const dragging = document.querySelector(".block.dragging");
+        const type = dragging?.querySelector('[data-field="title"]')?.dataset.type;
+        if (type) {
+          renumberBlocks(type);
+          scheduleUpdate();
+        }
+        clearDragStyles();
+      });
+
+      document.querySelectorAll(".card-list").forEach((list) => {
+        list.addEventListener("dragover", (event) => {
+          const dragging = document.querySelector(".block.dragging");
+          if (!dragging || dragging.parentElement !== list) return;
+
+          event.preventDefault();
+          list.classList.add("drag-over");
+          const afterElement = getDragAfterElement(list, event.clientY);
+
+          if (afterElement) {
+            list.insertBefore(dragging, afterElement);
+          } else {
+            list.appendChild(dragging);
+          }
+        });
+
+        list.addEventListener("dragleave", (event) => {
+          if (!list.contains(event.relatedTarget)) {
+            list.classList.remove("drag-over");
+          }
+        });
+
+        list.addEventListener("drop", (event) => {
+          const dragging = document.querySelector(".block.dragging");
+          if (!dragging || dragging.parentElement !== list) return;
+
+          event.preventDefault();
+          list.classList.remove("drag-over");
+          const type = dragging.querySelector('[data-field="title"]')?.dataset.type;
+          if (type) renumberBlocks(type);
+          scheduleUpdate();
+          setStatus("已更新卡片順序");
+        });
+      });
+
+      document.getElementById("openPreviewBtn").addEventListener("click", () => {
+        setPreviewOverlay(true);
+      });
+
+      document.getElementById("closePreviewBtn").addEventListener("click", () => {
+        setPreviewOverlay(false);
+      });
+
+      document.getElementById("previewOverlay").addEventListener("click", (event) => {
+        if (event.target.id === "previewOverlay") {
+          setPreviewOverlay(false);
+        }
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          setPreviewOverlay(false);
+        }
+      });
+
       document.getElementById("fullscreenBtn").addEventListener("click", async () => {
         const container = document.getElementById("previewContainer");
         try {
@@ -1173,6 +1581,7 @@ ${cardHtml(data.growths, "請填標題", "請填內容")}
             await document.exitFullscreen();
             setStatus("已退出全螢幕");
           } else {
+            setResultView("preview");
             await container.requestFullscreen();
             setStatus("已進入全螢幕");
           }
