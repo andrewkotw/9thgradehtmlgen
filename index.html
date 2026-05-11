@@ -236,18 +236,189 @@
         min-height: 84px;
       }
 
+      .advanced-theme {
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        margin-top: 12px;
+        overflow: hidden;
+      }
+
+      .advanced-theme summary {
+        cursor: pointer;
+        font-weight: 800;
+        padding: 12px 14px;
+      }
+
+      .advanced-theme-body {
+        border-top: 1px solid #e2e8f0;
+        padding: 14px;
+      }
+
+      .color-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .color-field {
+        display: grid;
+        grid-template-columns: 44px minmax(0, 1fr);
+        align-items: center;
+        gap: 10px;
+      }
+
+      .color-field input[type="color"] {
+        height: 42px;
+        padding: 4px;
+        border-radius: 12px;
+      }
+
+      .color-field label {
+        margin: 0;
+      }
+
+      .color-title {
+        display: block;
+        font-weight: 800;
+      }
+
+      .color-code {
+        display: block;
+        color: var(--muted);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 0.82rem;
+        margin-top: 2px;
+      }
+
+      .color-note {
+        display: block;
+        color: var(--muted);
+        font-size: 0.82rem;
+        line-height: 1.35;
+        margin-top: 2px;
+      }
+
+      .palette-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 14px;
+      }
+
+      .palette-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #fff;
+        border: 1px solid #cbd5e1;
+        color: #334155;
+        padding: 8px 10px;
+        font-size: 0.88rem;
+      }
+
+      .palette-swatch {
+        display: inline-grid;
+        grid-template-columns: repeat(3, 10px);
+        overflow: hidden;
+        width: 30px;
+        height: 18px;
+        border: 1px solid #cbd5e1;
+        border-radius: 999px;
+      }
+
+      .palette-swatch span {
+        display: block;
+      }
+
       .code-box {
         width: 100%;
         min-height: 520px;
         border: 1px solid #cbd5e1;
         border-radius: 16px;
-        padding: 14px;
+        padding: 14px 0;
         font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
         font-size: 12px;
         line-height: 1.5;
         background: #0f172a;
         color: #e2e8f0;
-        resize: vertical;
+        overflow: auto;
+        tab-size: 2;
+      }
+
+      .code-box code {
+        font: inherit;
+      }
+
+      .code-line {
+        display: grid;
+        grid-template-columns: 46px minmax(0, 1fr);
+        min-width: max-content;
+        padding-right: 14px;
+      }
+
+      .line-number {
+        color: #6e7681;
+        padding: 0 12px;
+        text-align: right;
+        user-select: none;
+      }
+
+      .line-code {
+        border-left: 1px solid rgba(148, 163, 184, 0.22);
+        padding-left: 12px;
+        white-space: pre;
+      }
+
+      .syntax-comment {
+        color: #8b949e;
+      }
+
+      .syntax-doctype {
+        color: #ff7b72;
+      }
+
+      .syntax-punctuation {
+        color: #7ee787;
+      }
+
+      .syntax-tag {
+        color: #7ee787;
+      }
+
+      .syntax-attr {
+        color: #79c0ff;
+      }
+
+      .syntax-string {
+        color: #a5d6ff;
+      }
+
+      .syntax-text {
+        color: #e6edf3;
+      }
+
+      .syntax-css-selector {
+        color: #d2a8ff;
+      }
+
+      .syntax-css-property {
+        color: #79c0ff;
+      }
+
+      .syntax-css-value {
+        color: #a5d6ff;
+      }
+
+      .syntax-css-number {
+        color: #79c0ff;
+      }
+
+      .syntax-css-color {
+        color: #ffa657;
+      }
+
+      .syntax-css-variable {
+        color: #ff7b72;
       }
 
       .button-row {
@@ -356,7 +527,8 @@
 
       .preview-frame {
         width: 100%;
-        height: 420px;
+        height: min(72vh, 760px);
+        min-height: 560px;
         border: 1px solid #cbd5e1;
         border-radius: 16px;
         background: white;
@@ -386,6 +558,13 @@
         flex-wrap: wrap;
         gap: 10px;
         margin-top: 12px;
+      }
+      #openPreviewBtn {
+        position: fixed;
+        right: 22px;
+        bottom: 22px;
+        z-index: 1000;
+        box-shadow: 0 12px 30px rgba(15, 23, 42, 0.18);
       }
       .view-toggle {
         display: inline-flex;
@@ -462,6 +641,18 @@
         .grid-2 {
           grid-template-columns: 1fr;
         }
+        .color-grid {
+          grid-template-columns: 1fr;
+        }
+        #openPreviewBtn {
+          right: 14px;
+          bottom: 14px;
+          padding: 11px 14px;
+        }
+        .preview-frame {
+          height: 70vh;
+          min-height: 480px;
+        }
         .page {
           padding: 14px;
         }
@@ -522,7 +713,93 @@
                   <option value="green">綠色主題</option>
                   <option value="purple">紫色主題</option>
                   <option value="orange">橘色主題</option>
+                  <option value="custom">自訂主題（進階）</option>
                 </select>
+                <details class="advanced-theme" id="advancedTheme">
+                  <summary>進階：調整 CSS 變數顏色</summary>
+                  <div class="advanced-theme-body">
+                    <div class="palette-row" aria-label="套用範例色票">
+                      <button type="button" class="palette-btn" data-palette="dream">
+                        <span class="palette-swatch" aria-hidden="true">
+                          <span style="background:#faf5ff"></span>
+                          <span style="background:#7c3aed"></span>
+                          <span style="background:#a855f7"></span>
+                        </span>
+                        夢幻紫
+                      </button>
+                      <button type="button" class="palette-btn" data-palette="ocean">
+                        <span class="palette-swatch" aria-hidden="true">
+                          <span style="background:#ecfeff"></span>
+                          <span style="background:#0891b2"></span>
+                          <span style="background:#22d3ee"></span>
+                        </span>
+                        海洋藍
+                      </button>
+                      <button type="button" class="palette-btn" data-palette="forest">
+                        <span class="palette-swatch" aria-hidden="true">
+                          <span style="background:#f0fdf4"></span>
+                          <span style="background:#15803d"></span>
+                          <span style="background:#4ade80"></span>
+                        </span>
+                        森林綠
+                      </button>
+                      <button type="button" class="palette-btn" data-palette="sunset">
+                        <span class="palette-swatch" aria-hidden="true">
+                          <span style="background:#fff7ed"></span>
+                          <span style="background:#ea580c"></span>
+                          <span style="background:#f59e0b"></span>
+                        </span>
+                        夕陽橘
+                      </button>
+                    </div>
+                    <div class="color-grid">
+                      <div class="color-field">
+                        <input type="color" id="customBg" />
+                        <label for="customBg">
+                          <span class="color-title">頁面背景</span>
+                          <span class="color-code">--bg</span>
+                          <span class="color-note">整個網頁最底層的淡色背景。</span>
+                        </label>
+                      </div>
+                      <div class="color-field">
+                        <input type="color" id="customAccent" />
+                        <label for="customAccent">
+                          <span class="color-title">主要顏色</span>
+                          <span class="color-code">--accent</span>
+                          <span class="color-note">標題、重點線條和主要裝飾色。</span>
+                        </label>
+                      </div>
+                      <div class="color-field">
+                        <input type="color" id="customAccent2" />
+                        <label for="customAccent2">
+                          <span class="color-title">第二顏色</span>
+                          <span class="color-code">--accent-2</span>
+                          <span class="color-note">漸層和搭配主要顏色的輔助色。</span>
+                        </label>
+                      </div>
+                      <div class="color-field">
+                        <input type="color" id="customSoft" />
+                        <label for="customSoft">
+                          <span class="color-title">淡色區塊</span>
+                          <span class="color-code">--soft</span>
+                          <span class="color-note">卡片、標籤或柔和背景用色。</span>
+                        </label>
+                      </div>
+                      <div class="color-field">
+                        <input type="color" id="customBorder" />
+                        <label for="customBorder">
+                          <span class="color-title">邊框顏色</span>
+                          <span class="color-code">--border</span>
+                          <span class="color-note">卡片外框、分隔線等細節顏色。</span>
+                        </label>
+                      </div>
+                    </div>
+                    <p class="field-help">
+                      選「自訂主題」時才會套用。左邊是中文意思，下面的
+                      <code>--變數名稱</code> 是 CSS 裡真正使用的名稱。
+                    </p>
+                  </div>
+                </details>
               </div>
             </div>
 
@@ -685,7 +962,7 @@
                   title="preview"
                 ></iframe>
               </div>
-            <textarea id="htmlOutput" class="code-box preview-panel" readonly hidden></textarea>
+            <pre id="htmlOutput" class="code-box preview-panel" hidden><code></code></pre>
           </div>
         </section>
       </div>
@@ -707,6 +984,11 @@
         subtitle:
           "記錄我在國中三年學過的科技技能、最喜歡的作品或一堂課，以及想送給未來自己的話。",
         theme: "red",
+        customBg: "#faf5ff",
+        customAccent: "#7c3aed",
+        customAccent2: "#a855f7",
+        customSoft: "#f3e8ff",
+        customBorder: "#e9d5ff",
         profileImage: "https://via.placeholder.com/180x180?text=Profile",
         workImage: "https://via.placeholder.com/400x260?text=Work",
         intro:
@@ -761,6 +1043,36 @@
           },
         ],
       };
+      const themePalettes = {
+        dream: {
+          bg: "#faf5ff",
+          accent: "#7c3aed",
+          accent2: "#a855f7",
+          soft: "#f3e8ff",
+          border: "#e9d5ff",
+        },
+        ocean: {
+          bg: "#ecfeff",
+          accent: "#0891b2",
+          accent2: "#22d3ee",
+          soft: "#cffafe",
+          border: "#a5f3fc",
+        },
+        forest: {
+          bg: "#f0fdf4",
+          accent: "#15803d",
+          accent2: "#4ade80",
+          soft: "#dcfce7",
+          border: "#bbf7d0",
+        },
+        sunset: {
+          bg: "#fff7ed",
+          accent: "#ea580c",
+          accent2: "#f59e0b",
+          soft: "#ffedd5",
+          border: "#fed7aa",
+        },
+      };
 
       function escapeHtml(text) {
         return String(text)
@@ -798,7 +1110,11 @@
           .join("\n\n");
       }
 
-      function getThemeCSS(theme) {
+      function cleanColor(value, fallback) {
+        return /^#[0-9a-fA-F]{6}$/.test(value) ? value : fallback;
+      }
+
+      function getThemeCSS(theme, customTheme = {}) {
         const themeOverrides = {
           red: {
             bg: "#fff8fb",
@@ -837,11 +1153,21 @@
           },
         };
 
+        if (theme === "custom") {
+          return {
+            bg: cleanColor(customTheme.bg, defaults.customBg),
+            accent: cleanColor(customTheme.accent, defaults.customAccent),
+            accent2: cleanColor(customTheme.accent2, defaults.customAccent2),
+            soft: cleanColor(customTheme.soft, defaults.customSoft),
+            border: cleanColor(customTheme.border, defaults.customBorder),
+          };
+        }
+
         return themeOverrides[theme] || themeOverrides.red;
       }
 
       function buildHtml(data) {
-        const theme = getThemeCSS(data.theme);
+        const theme = getThemeCSS(data.theme, data.customTheme);
         const hasProfileImage = data.profileImage.trim();
         const html = `<!DOCTYPE html>
 <html lang="zh-Hant">
@@ -1049,6 +1375,11 @@ ${cardHtml(data.growths, "請填標題", "請填內容")}
         "mainTitle",
         "subtitle",
         "theme",
+        "customBg",
+        "customAccent",
+        "customAccent2",
+        "customSoft",
+        "customBorder",
         "profileImage",
         "workImage",
         "intro",
@@ -1059,10 +1390,173 @@ ${cardHtml(data.growths, "請填標題", "請填內容")}
       ];
       const STORAGE_KEY = "9thgradehtmlgen-data-v1";
       let updateTimer;
+      let currentHtml = "";
       const imageTests = {
         profileImage: { url: "", token: 0 },
         workImage: { url: "", token: 0 },
       };
+
+      function highlightAttributes(attrs) {
+        let highlighted = "";
+        let cursor = 0;
+        const attrPattern =
+          /([^\s=\/>]+)(\s*=\s*)?("[^"]*"|'[^']*'|[^\s"'=<>`]+)?/g;
+
+        attrs.replace(attrPattern, (match, name, equals, value, offset) => {
+          highlighted += escapeHtml(attrs.slice(cursor, offset));
+          highlighted += `<span class="syntax-attr">${escapeHtml(name)}</span>`;
+          if (equals) {
+            highlighted += `<span class="syntax-punctuation">${escapeHtml(equals)}</span>`;
+          }
+          if (value) {
+            highlighted += `<span class="syntax-string">${escapeHtml(value)}</span>`;
+          }
+          cursor = offset + match.length;
+          return match;
+        });
+
+        highlighted += escapeHtml(attrs.slice(cursor));
+        return highlighted;
+      }
+
+      function highlightCssValue(value) {
+        let highlighted = "";
+        let cursor = 0;
+        const valuePattern =
+          /#[0-9a-fA-F]{3,8}\b|--[A-Za-z0-9_-]+|\b\d*\.?\d+(?:px|rem|em|%|vh|vw|deg|s|ms)?\b|("[^"]*"|'[^']*')/g;
+
+        value.replace(valuePattern, (match, ...args) => {
+          const offset = args[args.length - 2];
+          highlighted += escapeHtml(value.slice(cursor, offset));
+          let tokenClass = "syntax-css-value";
+
+          if (match.startsWith("#")) {
+            tokenClass = "syntax-css-color";
+          } else if (match.startsWith("--")) {
+            tokenClass = "syntax-css-variable";
+          } else if (/^\d/.test(match)) {
+            tokenClass = "syntax-css-number";
+          } else if (/^["']/.test(match)) {
+            tokenClass = "syntax-string";
+          }
+
+          highlighted += `<span class="${tokenClass}">${escapeHtml(match)}</span>`;
+          cursor = offset + match.length;
+          return match;
+        });
+
+        highlighted += escapeHtml(value.slice(cursor));
+        return highlighted;
+      }
+
+      function highlightCssDeclaration(text) {
+        const propMatch = text.match(/^(\s*)((?:--)?[A-Za-z][A-Za-z0-9_-]*)(\s*:\s*)([\s\S]*?)(;?\s*)$/);
+
+        if (!propMatch) {
+          return escapeHtml(text);
+        }
+
+        const [, lead, property, colon, value, tail] = propMatch;
+        return (
+          escapeHtml(lead) +
+          `<span class="syntax-css-property">${escapeHtml(property)}</span>` +
+          `<span class="syntax-punctuation">${escapeHtml(colon)}</span>` +
+          `<span class="syntax-css-value">${highlightCssValue(value)}</span>` +
+          escapeHtml(tail)
+        );
+      }
+
+      function highlightCss(css) {
+        let highlighted = "";
+        let cursor = 0;
+        const cssPattern = /\/\*[\s\S]*?\*\/|[^{}\n]+(?=\s*\{)|[{}]|[^{}\n]+/g;
+
+        css.replace(cssPattern, (token, offset) => {
+          highlighted += escapeHtml(css.slice(cursor, offset));
+
+          if (token.startsWith("/*")) {
+            highlighted += `<span class="syntax-comment">${escapeHtml(token)}</span>`;
+          } else if (token === "{" || token === "}") {
+            highlighted += `<span class="syntax-punctuation">${escapeHtml(token)}</span>`;
+          } else if (css.slice(offset + token.length).match(/^\s*\{/)) {
+            highlighted += `<span class="syntax-css-selector">${escapeHtml(token)}</span>`;
+          } else {
+            highlighted += highlightCssDeclaration(token);
+          }
+
+          cursor = offset + token.length;
+          return token;
+        });
+
+        highlighted += escapeHtml(css.slice(cursor));
+        return highlighted;
+      }
+
+      function highlightHtmlChunk(source, startInStyle = false) {
+        let highlighted = "";
+        let cursor = 0;
+        let inStyle = startInStyle;
+        const htmlPattern =
+          /<!--[\s\S]*?-->|<!doctype[\s\S]*?>|<\/?[A-Za-z][^>]*?>/gi;
+
+        source.replace(htmlPattern, (token, offset) => {
+          const textBefore = source.slice(cursor, offset);
+          if (textBefore) {
+            highlighted += inStyle
+              ? highlightCss(textBefore)
+              : `<span class="syntax-text">${escapeHtml(textBefore)}</span>`;
+          }
+
+          if (token.startsWith("<!--")) {
+            highlighted += `<span class="syntax-comment">${escapeHtml(token)}</span>`;
+          } else if (/^<!doctype/i.test(token)) {
+            highlighted += `<span class="syntax-doctype">${escapeHtml(token)}</span>`;
+          } else {
+            const tagMatch = token.match(/^<(\s*\/?\s*)([^\s/>]+)([\s\S]*?)(\/?\s*)>$/);
+
+            if (!tagMatch) {
+              highlighted += escapeHtml(token);
+            } else {
+              const [, prefix, tagName, attrs, suffix] = tagMatch;
+              highlighted += `<span class="syntax-punctuation">&lt;${escapeHtml(prefix)}</span>`;
+              highlighted += `<span class="syntax-tag">${escapeHtml(tagName)}</span>`;
+              highlighted += highlightAttributes(attrs);
+              highlighted += `<span class="syntax-punctuation">${escapeHtml(suffix)}&gt;</span>`;
+              inStyle = tagName.toLowerCase() === "style" ? !prefix.includes("/") : inStyle;
+              if (prefix.includes("/") && tagName.toLowerCase() === "style") {
+                inStyle = false;
+              }
+            }
+          }
+
+          cursor = offset + token.length;
+          return token;
+        });
+
+        const textAfter = source.slice(cursor);
+        if (textAfter) {
+          highlighted += inStyle
+            ? highlightCss(textAfter)
+            : `<span class="syntax-text">${escapeHtml(textAfter)}</span>`;
+        }
+        return { html: highlighted, inStyle };
+      }
+
+      function highlightHtml(source) {
+        return highlightHtmlChunk(source).html;
+      }
+
+      function renderNumberedHtml(source) {
+        let inStyle = false;
+        return source
+          .split("\n")
+          .map((line, index) => {
+            const result = highlightHtmlChunk(line, inStyle);
+            inStyle = result.inStyle;
+            return `<span class="code-line"><span class="line-number">${index + 1}</span><span class="line-code">${result.html || " "}</span></span>`;
+          })
+          .join("");
+      }
 
       function makeBlock(
         titleLabel,
@@ -1160,10 +1654,31 @@ ${cardHtml(data.growths, "請填標題", "請填內容")}
           .forEach((element) => element.classList.remove("dragging", "drag-over"));
       }
 
+      function syncAdvancedTheme() {
+        const advancedTheme = document.getElementById("advancedTheme");
+        advancedTheme.open = document.getElementById("theme").value === "custom";
+      }
+
+      function applyThemePalette(name) {
+        const palette = themePalettes[name];
+        if (!palette) return;
+
+        document.getElementById("theme").value = "custom";
+        document.getElementById("customBg").value = palette.bg;
+        document.getElementById("customAccent").value = palette.accent;
+        document.getElementById("customAccent2").value = palette.accent2;
+        document.getElementById("customSoft").value = palette.soft;
+        document.getElementById("customBorder").value = palette.border;
+        syncAdvancedTheme();
+        updateOutput();
+        saveDraft();
+      }
+
       function fillDefaults() {
         ids.forEach((id) => {
           document.getElementById(id).value = defaults[id];
         });
+        syncAdvancedTheme();
 
         const skillsWrap = document.getElementById("skillsWrap");
         const growthWrap = document.getElementById("growthWrap");
@@ -1221,6 +1736,18 @@ ${cardHtml(data.growths, "請填標題", "請填內容")}
           mainTitle: document.getElementById("mainTitle").value,
           subtitle: document.getElementById("subtitle").value,
           theme: document.getElementById("theme").value,
+          customBg: document.getElementById("customBg").value,
+          customAccent: document.getElementById("customAccent").value,
+          customAccent2: document.getElementById("customAccent2").value,
+          customSoft: document.getElementById("customSoft").value,
+          customBorder: document.getElementById("customBorder").value,
+          customTheme: {
+            bg: document.getElementById("customBg").value,
+            accent: document.getElementById("customAccent").value,
+            accent2: document.getElementById("customAccent2").value,
+            soft: document.getElementById("customSoft").value,
+            border: document.getElementById("customBorder").value,
+          },
           profileImage: document.getElementById("profileImage").value,
           workImage: document.getElementById("workImage").value,
           intro: document.getElementById("intro").value,
@@ -1262,6 +1789,21 @@ ${cardHtml(data.growths, "請填標題", "請填內容")}
               el.value = data[id];
             }
           });
+
+          if (data.customTheme && typeof data.customTheme === "object") {
+            document.getElementById("customBg").value =
+              cleanColor(data.customTheme.bg, defaults.customBg);
+            document.getElementById("customAccent").value =
+              cleanColor(data.customTheme.accent, defaults.customAccent);
+            document.getElementById("customAccent2").value =
+              cleanColor(data.customTheme.accent2, defaults.customAccent2);
+            document.getElementById("customSoft").value =
+              cleanColor(data.customTheme.soft, defaults.customSoft);
+            document.getElementById("customBorder").value =
+              cleanColor(data.customTheme.border, defaults.customBorder);
+          }
+
+          syncAdvancedTheme();
 
           const skillsWrap = document.getElementById("skillsWrap");
           const growthWrap = document.getElementById("growthWrap");
@@ -1312,7 +1854,8 @@ ${cardHtml(data.growths, "請填標題", "請填內容")}
         try {
           const data = collectData();
           const html = buildHtml(data);
-          document.getElementById("htmlOutput").value = html;
+          currentHtml = html;
+          document.querySelector("#htmlOutput code").innerHTML = renderNumberedHtml(html);
           document.getElementById("previewFrame").srcdoc = html;
           document.getElementById("overlayPreviewFrame").srcdoc = html;
           updateImageTests(data);
@@ -1419,10 +1962,21 @@ ${cardHtml(data.growths, "請填標題", "請填內容")}
 
       document.addEventListener("input", scheduleUpdate);
 
+      document.getElementById("theme").addEventListener("change", () => {
+        syncAdvancedTheme();
+        scheduleUpdate();
+      });
+
+      document.querySelectorAll("[data-palette]").forEach((button) => {
+        button.addEventListener("click", () => {
+          applyThemePalette(button.dataset.palette);
+          setStatus("已套用範例色票");
+        });
+      });
+
       document.getElementById("copyBtn").addEventListener("click", async () => {
         try {
-          const html = document.getElementById("htmlOutput").value;
-          await copyText(html);
+          await copyText(currentHtml);
           setStatus("已複製");
         } catch (error) {
           console.error("Copy failed:", error);
@@ -1432,8 +1986,7 @@ ${cardHtml(data.growths, "請填標題", "請填內容")}
 
       document.getElementById("downloadBtn").addEventListener("click", () => {
         try {
-          const html = document.getElementById("htmlOutput").value;
-          const blob = new Blob([html], { type: "text/html;charset=utf-8" });
+          const blob = new Blob([currentHtml], { type: "text/html;charset=utf-8" });
           const url = URL.createObjectURL(blob);
           const a = document.createElement("a");
           a.href = url;
@@ -1448,6 +2001,11 @@ ${cardHtml(data.growths, "請填標題", "請填內容")}
       });
 
       document.getElementById("resetBtn").addEventListener("click", () => {
+        const confirmed = window.confirm(
+          "確定要重設成範例內容嗎？目前填寫的文字會被覆蓋。",
+        );
+        if (!confirmed) return;
+
         try {
           fillDefaults();
           updateOutput();
